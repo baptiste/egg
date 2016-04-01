@@ -67,3 +67,8 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null")){
   if(fixed_ar)  all$respect <- TRUE
   all
 }
+
+#' @export
+.dummy_plot <- gtable::gtable_matrix("placeholder", matrix(replicate(9, grid::nullGrob(), simplify = FALSE), 3, 3), 
+                                     widths=rep(unit(1,"null"), 3), 
+                                     heights = rep(unit(1,"null"), 3))

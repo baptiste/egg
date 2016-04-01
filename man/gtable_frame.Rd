@@ -19,4 +19,31 @@ gtable_frame(g, width = unit(1, "null"), height = unit(1, "null"))
 \description{
 gtable_frame
 }
+\examples{
+library(grid)
+library(gtable)
+p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+  geom_point() 
+
+p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+  geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
+  guides(colour="none") +
+  theme()
+
+p3 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+  geom_point() + facet_grid(. ~ cyl, scales = "free")
+
+g1 <- ggplotGrob(p1);
+g2 <- ggplotGrob(p2);
+g3 <- ggplotGrob(p3);
+fg1 <- gtable_frame(g1)
+fg2 <- gtable_frame(g2)
+fg12 <- gtable_frame(rbind(fg1,fg2), width=unit(2,"null"), height=unit(1,"null"))
+fg3 <- gtable_frame(g3, width=unit(1,"null"), height=unit(1,"null"))
+grid.newpage()
+combined <- cbind(fg12, fg3)
+combined <- gtable_add_grob(combined, rectGrob(gp=gpar(fill="grey98", alpha=0.5, lty=2, lwd=1.5)),
+                            l=2, r=5, t=2, b=2, z=Inf, name="debug")
+grid.draw(combined)
+}
 

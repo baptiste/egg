@@ -8,8 +8,13 @@
 #' @param width grid unit, requested panel width
 #' @param height grid unit, requested panel height
 #'
+#' @importFrom grid unit convertWidth convertHeight
 #' @return gtable with fixed panel sizes
 #' @export
+#' @examples 
+#' p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)
+#' p2 <- p1 + facet_wrap(~carb, nrow=1) 
+#' grid.arrange(grobs=lapply(list(p1,p2), set_panel_size))
 set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL, 
                            margin = unit(1,"mm"),
                            width=unit(4, "cm"), 
@@ -21,7 +26,7 @@ set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
   nw <- length(panel_index_w)
   nh <- length(panel_index_h)
   
-  if(getRversion() < "3.3.0"){
+  if(getRversion() <= "3.3.0"){
     
     # the following conversion is necessary
     # because there is no `[<-`.unit method

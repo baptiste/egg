@@ -1,2 +1,4 @@
 # egg
-(fragile) extensions for ggplot2
+
+Misc. doomed tricks for ggplot2. Hatch at your own risk.
+

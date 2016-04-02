@@ -49,15 +49,30 @@ p3 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
 g1 <- ggplotGrob(p1);
 g2 <- ggplotGrob(p2);
 g3 <- ggplotGrob(p3);
-fg1 <- gtable_frame(g1)
-fg2 <- gtable_frame(g2)
+fg1 <- gtable_frame(g1, debug=TRUE)
+fg2 <- gtable_frame(g2, debug=TRUE)
 fg12 <- gtable_frame(rbind(fg1,fg2), width=unit(2,"null"), height=unit(1,"null"))
-fg3 <- gtable_frame(g3, width=unit(1,"null"), height=unit(1,"null"))
+fg3 <- gtable_frame(g3, width=unit(1,"null"), height=unit(1,"null"), debug=TRUE)
 grid.newpage()
 combined <- cbind(fg12, fg3)
-combined <- gtable_add_grob(combined, rectGrob(gp=gpar(fill="grey98", alpha=0.5, lty=2, lwd=1.5)),
-                            l=2, r=5, t=2, b=2, z=Inf, name="debug")
 grid.draw(combined)
 ```
 
 ![](inst/demo/frame-1.png)<!-- -->
+
+Arranging and aligning multiple plots
+-------------------------------------
+
+This is a convenience function based on the above, more useful than `grid.arrange` for the special case of ggplots as it aligns the plot panels,
+
+``` ggarrange
+p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+  geom_point() 
+p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+  geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
+  guides(colour="none") +
+  theme()
+grid.newpage()
+grid.draw(ggarrange(p1, p2, widths = lapply(c(1,2), unit, "null"), 
+                    heights=list(unit(1,"null"))))
+```

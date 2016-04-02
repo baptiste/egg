@@ -1,51 +1,49 @@
-egg
-===
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+# egg
 
 Misc. doomed tricks for ggplot2.
 
-    ## Loading required package: gridExtra
+```{r setup, echo=FALSE}
+library(egg)
+library(grid)
+library(gtable)
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, fig.path = 'inst/demo/')
+```
 
-    ## Loading required package: ggplot2
 
-Exposing ggplot2 layouts
-------------------------
+## Exposing ggplot2 layouts
 
-``` r
+```{r layout}
 p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)
 p2 <- qplot(mpg, data = mtcars) + ggtitle("title")
 p3 <- qplot(mpg, data = mtcars, geom = "dotplot")
 p4 <- p1 + facet_wrap(~carb, nrow=1) + theme(legend.position="none") +
   ggtitle("facetted plot")
 pl <- lapply(list(p1,p2, p3, p4), expose_layout, FALSE, FALSE)
-```
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-    ## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
-
-``` r
 grid.arrange(grobs=pl, widths=c(1.2,1,1),
              layout_matrix = rbind(c(1, 2, 3),
                                    c(4, 4, 4)))
 ```
 
-![](inst/demo/layout-1.png)<!-- -->
 
-Setting panel size
-------------------
 
-``` r
+## Setting panel size
+
+```{r panel}
 p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)
 p2 <- p1 + facet_wrap(~carb, nrow=1) 
 grid.arrange(grobs=lapply(list(p1,p2), set_panel_size))
 ```
 
-![](inst/demo/panel-1.png)<!-- -->
 
-Aligning complex ggplots
-------------------------
+## Aligning complex ggplots
 
-``` r
+```{r frame}
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
   geom_point() 
 
@@ -69,6 +67,6 @@ combined <- cbind(fg12, fg3)
 combined <- gtable_add_grob(combined, rectGrob(gp=gpar(fill="grey98", alpha=0.5, lty=2, lwd=1.5)),
                             l=2, r=5, t=2, b=2, z=Inf, name="debug")
 grid.draw(combined)
+
 ```
 
-![](inst/demo/frame-1.png)<!-- -->

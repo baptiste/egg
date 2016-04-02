@@ -169,3 +169,4 @@ ggarrange <- function(..., plots=list(...),
   do.call(rbind, rows)
   
 }
+

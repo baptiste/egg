@@ -7,7 +7,7 @@ output:
 
 Misc. doomed tricks for ggplot2.
 
-```{r setup, echo=FALSE}
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 library(egg)
 library(grid)
 library(gtable)

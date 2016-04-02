@@ -3,10 +3,6 @@ egg
 
 Misc. doomed tricks for ggplot2.
 
-    ## Loading required package: gridExtra
-
-    ## Loading required package: ggplot2
-
 Exposing ggplot2 layouts
 ------------------------
 

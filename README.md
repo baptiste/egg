@@ -65,14 +65,17 @@ Arranging and aligning multiple plots
 
 This is a convenience function based on the above, more useful than `grid.arrange` for the special case of ggplots as it aligns the plot panels,
 
-``` ggarrange
+``` r
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
-  geom_point() 
+geom_point() 
 p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
-  geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
-  guides(colour="none") +
-  theme()
-grid.newpage()
-grid.draw(ggarrange(p1, p2, widths = lapply(c(1,2), unit, "null"), 
-                    heights=list(unit(1,"null"))))
+geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
+guides(colour="none") +
+theme()
+g <- ggarrange(p1, p2, widths = lapply(c(1,2), unit, "null"), 
+heights=list(unit(1,"null")))
+
+grid.draw(g)
 ```
+
+![](inst/demo/ggarrange-1.png)<!-- -->

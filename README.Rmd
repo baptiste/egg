@@ -10,6 +10,7 @@ Misc. doomed tricks for ggplot2.
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 library(egg)
 library(grid)
+library(gridExtra)
 library(gtable)
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE, fig.path = 'inst/demo/', message=FALSE, warning=FALSE)
@@ -71,15 +72,15 @@ grid.draw(combined)
 
 This is a convenience function based on the above, more useful than `grid.arrange` for the special case of ggplots as it aligns the plot panels,
 
-```{ggarrange}
+```{r ggarrange}
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
-  geom_point() 
+geom_point() 
 p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
-  geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
-  guides(colour="none") +
-  theme()
-grid.newpage()
-grid.draw(ggarrange(p1, p2, widths = lapply(c(1,2), unit, "null"), 
-                    heights=list(unit(1,"null"))))
+geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
+guides(colour="none") +
+theme()
+g <- ggarrange(p1, p2, widths = lapply(c(1,2), unit, "null"), 
+heights=list(unit(1,"null")))
 
+grid.draw(g)
 ```

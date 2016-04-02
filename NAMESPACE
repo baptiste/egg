@@ -2,6 +2,7 @@
 
 export(.dummy_plot)
 export(expose_layout)
+export(ggarrange)
 export(gtable_frame)
 export(set_panel_size)
 importFrom(grid,convertHeight)

@@ -80,3 +80,92 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
 .dummy_plot <- gtable::gtable_matrix("placeholder", matrix(replicate(9, grid::nullGrob(), simplify = FALSE), 3, 3), 
                                      widths=rep(unit(1,"null"), 3), 
                                      heights = rep(unit(1,"null"), 3))
+
+
+
+
+
+
+#' gtable_frame
+#'
+#' @param ... ggplot objects
+#' @param plots list of ggplots
+#' @param heights list of requested heights
+#' @param widths list of requested widths
+#' @param nrow number of rows
+#' @param ncol number of columns
+#'
+#' @return gtable of aligned plots
+#' @export
+#' @examples 
+#' library(grid)
+#' library(gtable)
+#' p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+#'   geom_point() 
+#' p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+#'   geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
+#'   guides(colour="none") +
+#'   theme()
+#' grid.newpage()
+#' grid.draw(ggarrange(p1, p2, widths = lapply(c(1,2), unit, "null"), 
+#'                     heights=list(unit(1,"null"))))
+ggarrange <- function(..., plots=list(...), 
+                        nrow=NULL, ncol=NULL, 
+                        widths = NULL, heights = NULL){
+  
+  n <- length(plots)
+  grobs <- lapply(plots, ggplotGrob)
+  
+  
+  ## logic for the layout
+  # if nrow/ncol supplied, honour this
+  # if not, use length of widths/heights, if supplied
+  # if nothing supplied, work out sensible defaults
+  
+  ## nothing to be done but check inconsistency
+  if (!is.null(ncol) && !is.null(widths)){
+    stopifnot(length(widths) == ncol)
+  }
+  if (!is.null(nrow) && !is.null(heights)){
+    stopifnot(length(heights) == nrow)
+  }
+  ## use widths/heights if supplied
+  if (is.null(ncol) && !is.null(widths)){
+    ncol <- length(widths)
+  }
+  if (is.null(nrow) && !is.null(heights)){
+    nrow <- length(heights)
+  }
+  ## work out the missing one
+  if(is.null(nrow) && !is.null(ncol)) {
+    nrow <- ceiling(n/ncol)
+  }
+  if(is.null(ncol) && !is.null(nrow)) {
+    ncol <- ceiling(n/nrow)
+  }
+  
+  ## it may happen that sufficient info was passed,
+  ## but incompatible with number of grobs (fewer cells)
+  stopifnot(nrow*ncol >= n)
+  
+  ## last case: nothing exists
+  if(is.null(nrow) && is.null(ncol) && 
+     is.null(widths) && is.null(heights)) 
+  {
+    nm <- grDevices::n2mfrow(n)
+    nrow = nm[1]
+    ncol = nm[2]
+  }
+  
+  ## sizes
+  if(is.null(widths)) widths <- lapply(rep(1, ncol), unit, "null")
+  if(is.null(heights)) heights <- lapply(rep(1, nrow), unit, "null")
+  
+  fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, SIMPLIFY = FALSE)
+  if(nrow==1) splits <- rep(1, n) else
+     splits <- cut(seq_along(fg), nrow, labels = seq_len(nrow))
+  spl <- split(fg, splits)
+  rows <- lapply(spl, function(r) do.call(cbind, r))
+  do.call(rbind, rows)
+  
+}

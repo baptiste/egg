@@ -12,7 +12,7 @@ library(egg)
 library(grid)
 library(gtable)
 library(knitr)
-knitr::opts_chunk$set(echo = TRUE, fig.path = 'inst/demo/')
+knitr::opts_chunk$set(echo = TRUE, fig.path = 'inst/demo/', message=FALSE, warning=FALSE)
 ```
 
 

@@ -4,7 +4,8 @@
 \alias{gtable_frame}
 \title{gtable_frame}
 \usage{
-gtable_frame(g, width = unit(1, "null"), height = unit(1, "null"))
+gtable_frame(g, width = unit(1, "null"), height = unit(1, "null"),
+  debug = FALSE)
 }
 \arguments{
 \item{g}{gtable}
@@ -12,6 +13,8 @@ gtable_frame(g, width = unit(1, "null"), height = unit(1, "null"))
 \item{width}{requested width}
 
 \item{height}{requested height}
+
+\item{debug}{logical draw gtable cells}
 }
 \value{
 3x3 gtable wrapping the plot

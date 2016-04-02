@@ -4,6 +4,7 @@
 #' @param g gtable
 #' @param width requested width
 #' @param height requested height
+#' @param debug logical draw gtable cells
 #'
 #' @importFrom gtable gtable_matrix gtable_add_grob
 #' @return 3x3 gtable wrapping the plot
@@ -34,7 +35,7 @@
 #' combined <- gtable_add_grob(combined, rectGrob(gp=gpar(fill="grey98", alpha=0.5, lty=2, lwd=1.5)),
 #'                             l=2, r=5, t=2, b=2, z=Inf, name="debug")
 #' grid.draw(combined)
-gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null")){
+gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=FALSE){
   panels <- g[["layout"]][grepl("panel", g[["layout"]][["name"]]), ]
   ll <- unique(panels$l)
   tt <- unique(panels$t)
@@ -63,6 +64,13 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null")){
   heights <- unit.c(sum(top$heights), height, sum(bottom$heights))
   all <- gtable_matrix("all", grobs = matrix(grobs, ncol=3, nrow=3, byrow = TRUE), 
                        widths = widths, heights = heights)
+  
+  if(debug){
+    hints <- rectGrob(gp=gpar(fill=NA, lty=2, lwd=0.2))
+    tl <- expand.grid(t=1:3, l=1:3)
+    all <- gtable::gtable_add_grob(all, replicate(9, hints, simplify = FALSE), 
+                                   t=tl$t, l=tl$l, z=Inf, name="debug")
+  } 
   all[["layout"]][5,"name"] <- "panel" # make sure knows where the panel is
   if(fixed_ar)  all$respect <- TRUE
   all

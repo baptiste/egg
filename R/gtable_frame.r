@@ -55,7 +55,13 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
   right <- g[, seq(max(ll)+1, ncol(g))]
   
   fg <- nullGrob()
-  lg <-  if(length(left))  g[seq(min(tt), max(tt)), seq(1, min(ll)-1)] else fg
+   if(length(left))  {     
+     # add a dummy grob to make sure axes are flush
+     lg <- gtable_add_cols(g[seq(min(tt), max(tt)), seq(1, min(ll)-1)], unit(1,"null"), 0)
+     lg <- gtable_add_grob(lg, fg, 1, l=1)
+   } else {
+    lg <- fg
+  }
   rg <- if(length(right)) g[seq(min(tt), max(tt)), seq(max(ll)+1,ncol(g))] else fg
   grobs = list(fg, g[seq(1, min(tt)-1), seq(min(ll), max(ll))], fg, 
                lg, g[seq(min(tt), max(tt)), seq(min(ll), max(ll))], rg, 

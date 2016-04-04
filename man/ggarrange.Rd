@@ -5,7 +5,7 @@
 \title{gtable_frame}
 \usage{
 ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
-  widths = NULL, heights = NULL)
+  widths = NULL, heights = NULL, debug = FALSE)
 }
 \arguments{
 \item{...}{ggplot objects}
@@ -19,6 +19,8 @@ ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
 \item{widths}{list of requested widths}
 
 \item{heights}{list of requested heights}
+
+\item{debug}{logical, show layout with thin lines}
 }
 \value{
 gtable of aligned plots
@@ -36,7 +38,6 @@ p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
   guides(colour="none") +
   theme()
 grid.newpage()
-grid.draw(ggarrange(p1, p2, widths = lapply(c(1,2), unit, "null"), 
-                    heights=list(unit(1,"null"))))
+grid.draw(ggarrange(p1, p2, widths = c(2,1)))
 }
 

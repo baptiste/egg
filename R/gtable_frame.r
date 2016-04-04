@@ -55,11 +55,11 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
   right <- g[, seq(max(ll)+1, ncol(g))]
   
   fg <- nullGrob()
-   if(length(left))  {     
-     # add a dummy grob to make sure axes are flush
-     lg <- gtable_add_cols(g[seq(min(tt), max(tt)), seq(1, min(ll)-1)], unit(1,"null"), 0)
-     lg <- gtable_add_grob(lg, fg, 1, l=1)
-   } else {
+  if(length(left))  {     
+    # add a dummy grob to make sure axes are flush
+    lg <- gtable_add_cols(g[seq(min(tt), max(tt)), seq(1, min(ll)-1)], unit(1,"null"), 0)
+    lg <- gtable_add_grob(lg, fg, 1, l=1)
+  } else {
     lg <- fg
   }
   rg <- if(length(right)) g[seq(min(tt), max(tt)), seq(max(ll)+1,ncol(g))] else fg
@@ -83,12 +83,28 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
 }
 
 #' @export
-.dummy_plot <- gtable::gtable_matrix("placeholder", matrix(replicate(9, grid::nullGrob(), simplify = FALSE), 3, 3), 
-                                     widths=rep(unit(1,"null"), 3), 
-                                     heights = rep(unit(1,"null"), 3))
+.dummy_gtable <- gtable::gtable_matrix("placeholder", matrix(replicate(9, grid::nullGrob(), simplify = FALSE), 3, 3), 
+                                       widths=rep(unit(1,"null"), 3), 
+                                       heights = rep(unit(1,"null"), 3))
 
 
+#' @export
+.dummy_ggplot <- ggplot() + theme_void()
 
+
+# stolen from grid (because unexported)
+as.unit.list <- function (unit) 
+{
+  if (inherits(unit, "unit.list")) 
+    unit
+  else {
+    l <- length(unit)
+    result <- vector("list", l)
+    for (i in seq_len(l)) result[[i]] <- unit[i]
+    class(result) <- c("unit.list", "unit")
+    result
+  }
+}
 
 
 
@@ -100,6 +116,7 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
 #' @param widths list of requested widths
 #' @param nrow number of rows
 #' @param ncol number of columns
+#' @param debug logical, show layout with thin lines
 #'
 #' @return gtable of aligned plots
 #' @export
@@ -113,11 +130,11 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
 #'   guides(colour="none") +
 #'   theme()
 #' grid.newpage()
-#' grid.draw(ggarrange(p1, p2, widths = lapply(c(1,2), unit, "null"), 
-#'                     heights=list(unit(1,"null"))))
-ggarrange <- function(..., plots=list(...), 
-                        nrow=NULL, ncol=NULL, 
-                        widths = NULL, heights = NULL){
+#' grid.draw(ggarrange(p1, p2, widths = c(2,1)))
+ggarrange <- function(..., plots = list(...), 
+                      nrow = NULL, ncol = NULL, 
+                      widths = NULL, heights = NULL,
+                      debug = FALSE){
   
   n <- length(plots)
   grobs <- lapply(plots, ggplotGrob)
@@ -163,13 +180,23 @@ ggarrange <- function(..., plots=list(...),
     ncol = nm[2]
   }
   
+  ## case numeric
+  if(is.numeric(widths)) widths <- lapply(widths, unit, "null")
+  if(is.numeric(heights)) heights <- lapply(heights, unit, "null")
+  
   ## sizes
   if(is.null(widths)) widths <- lapply(rep(1, ncol), unit, "null")
   if(is.null(heights)) heights <- lapply(rep(1, nrow), unit, "null")
   
-  fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, SIMPLIFY = FALSE)
+  # user may naively have passed grid units, but
+  # only unit.list units work well with `[` so convert to this class
+  if(is.unit(widths)) widths <- as.unit.list(widths)
+  if(is.unit(heights)) widths <- as.unit.list(heights)
+  
+  fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, 
+               MoreArgs = list(debug=debug), SIMPLIFY = FALSE)
   if(nrow==1) splits <- rep(1, n) else
-     splits <- cut(seq_along(fg), nrow, labels = seq_len(nrow))
+    splits <- cut(seq_along(fg), nrow, labels = seq_len(nrow))
   spl <- split(fg, splits)
   rows <- lapply(spl, function(r) do.call(cbind, r))
   do.call(rbind, rows)

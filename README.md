@@ -1,3 +1,4 @@
+
 egg
 ===
 
@@ -26,7 +27,8 @@ Setting panel size
 ``` r
 p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)
 p2 <- p1 + facet_wrap(~carb, nrow=1) 
-grid.arrange(grobs=lapply(list(p1,p2), set_panel_size))
+grid.arrange(grobs=lapply(list(p1,p2), set_panel_size, 
+                          width = unit(2,"cm"), height = unit(1, "in")))
 ```
 
 ![](inst/demo/panel-1.png)<!-- -->
@@ -72,10 +74,8 @@ p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
 geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
 guides(colour="none") +
 theme()
-g <- ggarrange(p1, p2, widths = lapply(c(1,2), unit, "null"), 
-heights=list(unit(1,"null")))
 
-grid.draw(g)
+ggarrange(p1, p2, widths = 1:2)
 ```
 
 ![](inst/demo/ggarrange-1.png)<!-- -->

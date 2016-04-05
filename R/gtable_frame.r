@@ -192,8 +192,8 @@ ggarrange <- function(..., plots = list(...),
   if(is.numeric(heights)) heights <- lapply(heights, unit, "null")
   
   ## sizes
-  if(is.null(widths)) widths <- lapply(rep(1, ncol), unit, "null")
-  if(is.null(heights)) heights <- lapply(rep(1, nrow), unit, "null")
+  if(is.null(widths)) widths <- lapply(rep(1, n), unit, "null")
+  if(is.null(heights)) heights <- lapply(rep(1, n), unit, "null")
   
   # user may naively have passed grid units, but
   # only unit.list units work well with `[` so convert to this class
@@ -202,6 +202,10 @@ ggarrange <- function(..., plots = list(...),
   
   fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, 
                MoreArgs = list(debug=debug), SIMPLIFY = FALSE)
+  
+  if(n %/% nrow) { # trouble, we need to add dummy grobs to fill the layout
+    fg <- c(fg, rep(list(.dummy_gtable), nrow*ncol - n))
+  }
   if(nrow==1) splits <- rep(1, n) else
     splits <- cut(seq_along(fg), nrow, labels = seq_len(nrow))
   spl <- split(fg, splits)

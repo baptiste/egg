@@ -30,7 +30,6 @@ gtable_frame
 }
 \examples{
 library(grid)
-library(gtable)
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
   geom_point() 
 p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +

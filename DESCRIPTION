@@ -10,9 +10,7 @@ Description: Misc. doomed tricks for ggplot2.
 URL: https://github.com/baptiste/egg
 Depends: 
     gridExtra,
-    ggplot2,
-    grid,
-    gtable
+    ggplot2
 Imports:
     grid,
     gtable

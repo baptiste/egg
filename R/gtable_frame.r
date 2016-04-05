@@ -6,12 +6,13 @@
 #' @param height requested height
 #' @param debug logical draw gtable cells
 #'
-#' @importFrom gtable gtable_matrix gtable_add_grob
+#' @importFrom gtable gtable_matrix gtable_add_grob gtable_add_cols
+#' @importFrom grid unit unit.c nullGrob rectGrob
 #' @return 3x3 gtable wrapping the plot
 #' @export
 #' @examples 
 #' library(grid)
-#' library(gtable)
+#' library(gridExtra)
 #' p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
 #'   geom_point() 
 #' 
@@ -32,8 +33,6 @@
 #' fg3 <- gtable_frame(g3, width=unit(1,"null"), height=unit(1,"null"))
 #' grid.newpage()
 #' combined <- cbind(fg12, fg3)
-#' combined <- gtable_add_grob(combined, rectGrob(gp=gpar(fill="grey98", alpha=0.5, lty=2, lwd=1.5)),
-#'                             l=2, r=5, t=2, b=2, z=Inf, name="debug")
 #' grid.draw(combined)
 gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=FALSE){
   panels <- g[["layout"]][grepl("panel", g[["layout"]][["name"]]), ]
@@ -57,8 +56,8 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
   fg <- nullGrob()
   if(length(left))  {     
     # add a dummy grob to make sure axes are flush
-    lg <- gtable_add_cols(g[seq(min(tt), max(tt)), seq(1, min(ll)-1)], unit(1,"null"), 0)
-    lg <- gtable_add_grob(lg, fg, 1, l=1)
+    lg <- gtable::gtable_add_cols(g[seq(min(tt), max(tt)), seq(1, min(ll)-1)], unit(1,"null"), 0)
+    lg <- gtable::gtable_add_grob(lg, fg, 1, l=1)
   } else {
     lg <- fg
   }
@@ -96,6 +95,7 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
                                        heights = rep(unit(1,"null"), 3))
 
 
+#' @importFrom ggplot2 ggplot theme_void
 #' @export
 .dummy_ggplot <- ggplot() + theme_void()
 
@@ -130,7 +130,6 @@ as.unit.list <- function (unit)
 #' @export
 #' @examples 
 #' library(grid)
-#' library(gtable)
 #' p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
 #'   geom_point() 
 #' p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
@@ -206,8 +205,8 @@ ggarrange <- function(..., plots = list(...),
   if(nrow==1) splits <- rep(1, n) else
     splits <- cut(seq_along(fg), nrow, labels = seq_len(nrow))
   spl <- split(fg, splits)
-  rows <- lapply(spl, function(r) do.call(cbind, r))
-  do.call(rbind, rows)
+  rows <- lapply(spl, function(r) do.call(gridExtra::cbind.gtable, r))
+  do.call(gridExtra::rbind.gtable, rows)
   
 }
 

@@ -6,8 +6,8 @@
 #' @param height requested height
 #' @param debug logical draw gtable cells
 #'
-#' @importFrom gtable gtable_matrix gtable_add_grob gtable_add_cols
-#' @importFrom grid unit unit.c nullGrob rectGrob
+#' @importFrom gtable gtable_matrix gtable_add_grob gtable_add_cols gtable_add_rows
+#' @importFrom grid unit unit.c nullGrob rectGrob grid.newpage grid.draw
 #' @return 3x3 gtable wrapping the plot
 #' @export
 #' @examples 
@@ -47,32 +47,52 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
     g$respect <- FALSE
   }
   
-  core <- g[seq(min(tt), max(tt)), seq(min(ll), max(ll))]
-  top <- g[seq(1, min(tt)-1), ]
-  bottom <- g[seq(max(tt)+1, nrow(g)), ]
-  left <- g[, seq(1, min(ll)-1)]
-  right <- g[, seq(max(ll)+1, ncol(g))]
+  core <-   g[seq(min(tt), max(tt)),   seq(min(ll), max(ll))]
+  top <-    g[seq(1, min(tt)-1),       seq(min(ll), max(ll))]
+  bottom <- g[seq(max(tt)+1, nrow(g)), seq(min(ll), max(ll))]
+  left <-   g[seq(min(tt), max(tt)),   seq(1, min(ll)-1)]
+  right <-  g[seq(min(tt), max(tt)),   seq(max(ll)+1,ncol(g))]
   
   fg <- nullGrob()
-  if(length(left))  {     
-    # add a dummy grob to make sure axes are flush
-    lg <- gtable::gtable_add_cols(g[seq(min(tt), max(tt)), seq(1, min(ll)-1)], unit(1,"null"), 0)
+  
+  if(length(left))  {
+    # add a dummy grob to make sure things stick to the panel
+    lg <- gtable::gtable_add_cols(left, unit(1,"null"), 0)
     lg <- gtable::gtable_add_grob(lg, fg, 1, l=1)
   } else {
     lg <- fg
   }
-  
-  if(length(right))  {     
-    # add a dummy grob to make sure axes are flush
-    rg <- gtable_add_cols(g[seq(min(tt), max(tt)), seq(max(ll)+1,ncol(g))], unit(1,"null"))
+
+  if(length(right))  {
+    # add a dummy grob to make sure things stick to the panel
+    rg <- gtable_add_cols(right, unit(1,"null"))
     rg <- gtable_add_grob(rg, fg, 1, l=ncol(rg))
   } else {
     rg <- fg
   }
+
+  if(length(top))  {
+    # add a dummy grob to make sure things stick to the panel
+    tg <- gtable_add_rows(top, unit(1,"null"), 0)
+    tg <- gtable_add_grob(tg, fg, t = 1, l = 1)
+  } else {
+    tg <- fg
+  }
+
+  if(length(bottom))  {
+    # add a dummy grob to make sure things stick to the panel
+    bg <- gtable_add_rows(bottom, unit(1,"null"), -1)
+    bg <- gtable_add_grob(bg, fg, t = nrow(bg), l = 1)
+  } else {
+    bg <- fg
+  }
   
-  grobs = list(fg, g[seq(1, min(tt)-1), seq(min(ll), max(ll))], fg, 
-               lg, g[seq(min(tt), max(tt)), seq(min(ll), max(ll))], rg, 
-               fg, g[seq(max(tt)+1, nrow(g)), seq(min(ll), max(ll))], fg)
+  # tg <- lg <- bg <- rg <- fg
+  ## 3x3 cells (corners contain nullGrob)
+  grobs = list(fg, tg,   fg, 
+               lg, core, rg, 
+               fg, bg,   fg)
+  
   widths <- unit.c(sum(left$widths), width, sum(right$widths))
   heights <- unit.c(sum(top$heights), height, sum(bottom$heights))
   all <- gtable_matrix("all", grobs = matrix(grobs, ncol=3, nrow=3, byrow = TRUE), 
@@ -124,6 +144,7 @@ as.unit.list <- function (unit)
 #' @param widths list of requested widths
 #' @param nrow number of rows
 #' @param ncol number of columns
+#' @param byrow logical, fill by rows
 #' @param debug logical, show layout with thin lines
 #'
 #' @return gtable of aligned plots
@@ -141,11 +162,13 @@ as.unit.list <- function (unit)
 ggarrange <- function(..., plots = list(...), 
                       nrow = NULL, ncol = NULL, 
                       widths = NULL, heights = NULL,
+                      byrow = TRUE, 
+                      draw = TRUE, newpage = TRUE,
                       debug = FALSE){
   
   n <- length(plots)
   grobs <- lapply(plots, ggplotGrob)
-  
+
   
   ## logic for the layout
   # if nrow/ncol supplied, honour this
@@ -187,6 +210,7 @@ ggarrange <- function(..., plots = list(...),
     ncol = nm[2]
   }
   
+  
   ## case numeric
   if(is.numeric(widths)) widths <- lapply(widths, unit, "null")
   if(is.numeric(heights)) heights <- lapply(heights, unit, "null")
@@ -200,17 +224,37 @@ ggarrange <- function(..., plots = list(...),
   if(is.unit(widths)) widths <- as.unit.list(widths)
   if(is.unit(heights)) widths <- as.unit.list(heights)
   
+  
   fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, 
                MoreArgs = list(debug=debug), SIMPLIFY = FALSE)
   
   if(n %/% nrow) { # trouble, we need to add dummy grobs to fill the layout
     fg <- c(fg, rep(list(.dummy_gtable), nrow*ncol - n))
   }
-  if(nrow==1) splits <- rep(1, n) else
-    splits <- cut(seq_along(fg), nrow, labels = seq_len(nrow))
-  spl <- split(fg, splits)
-  rows <- lapply(spl, function(r) do.call(gridExtra::cbind.gtable, r))
-  do.call(gridExtra::rbind.gtable, rows)
   
+  if(byrow){
+    
+    if(nrow==1) splits <- rep(1, n) else
+      splits <- cut(seq_along(fg), nrow, labels = seq_len(nrow))
+    spl <- split(fg, splits)
+    rows <- lapply(spl, function(.r) do.call(gridExtra::cbind.gtable, .r))
+    all <- do.call(gridExtra::rbind.gtable, rows)
+    
+  } else { # fill colwise
+    
+    if(ncol==1) splits <- rep(1, n) else
+      splits <- cut(seq_along(fg), ncol, labels = seq_len(ncol))
+    spl <- split(fg, splits)
+    cols <- lapply(spl, function(.c) do.call(gridExtra::rbind.gtable, .c))
+    all <- do.call(gridExtra::cbind.gtable, cols)
+    
+  }
+   
+  if(draw) {
+    if(newpage) grid.newpage()
+    grid.draw(all)
+  }
+  
+  invisible(all) # return the full gtable
 }
 

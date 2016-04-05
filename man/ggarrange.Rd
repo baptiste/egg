@@ -5,7 +5,8 @@
 \title{gtable_frame}
 \usage{
 ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
-  widths = NULL, heights = NULL, debug = FALSE)
+  widths = NULL, heights = NULL, byrow = TRUE, draw = TRUE,
+  newpage = TRUE, debug = FALSE)
 }
 \arguments{
 \item{...}{ggplot objects}
@@ -19,6 +20,8 @@ ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
 \item{widths}{list of requested widths}
 
 \item{heights}{list of requested heights}
+
+\item{byrow}{logical, fill by rows}
 
 \item{debug}{logical, show layout with thin lines}
 }

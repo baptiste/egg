@@ -26,7 +26,7 @@ set_panel_size <- function(p=NULL, g=ggplotGrob(p), file=NULL,
   nw <- length(panel_index_w)
   nh <- length(panel_index_h)
   
-  if(getRversion() <= "3.3.0"){
+  if(getRversion() < "3.3.0"){
     
     # the following conversion is necessary
     # because there is no `[<-`.unit method

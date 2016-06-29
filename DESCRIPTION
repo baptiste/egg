@@ -9,9 +9,9 @@ License: GPL-3
 Description: Misc. doomed tricks for ggplot2.
 URL: https://github.com/baptiste/egg
 Depends: 
+    grid,
     gridExtra,
     ggplot2
 Imports:
-    grid,
     gtable
 RoxygenNote: 5.0.1.9000

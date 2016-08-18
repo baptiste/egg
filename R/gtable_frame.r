@@ -147,6 +147,8 @@ as.unit.list <- function (unit)
 #' @param byrow logical, fill by rows
 #' @param debug logical, show layout with thin lines
 #'
+#'
+#' @importFrom grid is.unit
 #' @return gtable of aligned plots
 #' @export
 #' @examples 
@@ -221,8 +223,8 @@ ggarrange <- function(..., plots = list(...),
   
   # user may naively have passed grid units, but
   # only unit.list units work well with `[` so convert to this class
-  if(is.unit(widths)) widths <- as.unit.list(widths)
-  if(is.unit(heights)) widths <- as.unit.list(heights)
+  if(grid::is.unit(widths)) widths <- as.unit.list(widths)
+  if(grid::is.unit(heights)) widths <- as.unit.list(heights)
   
   
   fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, 

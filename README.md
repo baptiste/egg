@@ -19,7 +19,7 @@ grid.arrange(grobs=pl, widths=c(1.2,1,1),
                                    c(4, 4, 4)))
 ```
 
-![](inst/demo/layout-1.png)<!-- -->
+![](inst/demo/layout-1.png)
 
 Setting panel size
 ------------------
@@ -31,7 +31,7 @@ grid.arrange(grobs=lapply(list(p1,p2), set_panel_size,
                           width = unit(2,"cm"), height = unit(1, "in")))
 ```
 
-![](inst/demo/panel-1.png)<!-- -->
+![](inst/demo/panel-1.png)
 
 Aligning complex ggplots
 ------------------------
@@ -60,7 +60,7 @@ combined <- cbind(fg12, fg3)
 grid.draw(combined)
 ```
 
-![](inst/demo/frame-1.png)<!-- -->
+![](inst/demo/frame-1.png)
 
 Arranging and aligning multiple plots
 -------------------------------------
@@ -78,4 +78,4 @@ theme()
 ggarrange(p1, p2, widths = 1:2)
 ```
 
-![](inst/demo/ggarrange-1.png)<!-- -->
+![](inst/demo/ggarrange-1.png)

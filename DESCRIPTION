@@ -8,10 +8,10 @@ Authors@R: c(person("Baptiste", "Auguie",
 License: GPL-3
 Description: Misc. doomed tricks for ggplot2.
 URL: https://github.com/baptiste/egg
-Depends: 
+Depends:
     grid,
     gridExtra,
     ggplot2
 Imports:
     gtable
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 5.0.1

@@ -42,7 +42,6 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
   fixed_ar <- g$respect
   if(fixed_ar) { # there lies madness, we want to align with aspect ratio constraints
     ar <- as.numeric(g$heights[tt[1]]) / as.numeric(g$widths[ll[1]])
-    print(ar)
     height <- width * ar
     g$respect <- FALSE
   }
@@ -62,32 +61,31 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
   } else {
     lg <- fg
   }
-
+  
   if(length(right))  {
     # add a dummy grob to make sure things stick to the panel
-    rg <- gtable_add_cols(right, unit(1,"null"))
-    rg <- gtable_add_grob(rg, fg, 1, l=ncol(rg))
+    rg <- gtable::gtable_add_cols(right, unit(1,"null"))
+    rg <- gtable::gtable_add_grob(rg, fg, 1, l=ncol(rg))
   } else {
     rg <- fg
   }
-
+  
   if(length(top))  {
     # add a dummy grob to make sure things stick to the panel
-    tg <- gtable_add_rows(top, unit(1,"null"), 0)
-    tg <- gtable_add_grob(tg, fg, t = 1, l = 1)
+    tg <- gtable::gtable_add_rows(top, unit(1,"null"), 0)
+    tg <- gtable::gtable_add_grob(tg, fg, t = 1, l = 1)
   } else {
     tg <- fg
   }
-
+  
   if(length(bottom))  {
     # add a dummy grob to make sure things stick to the panel
-    bg <- gtable_add_rows(bottom, unit(1,"null"), -1)
-    bg <- gtable_add_grob(bg, fg, t = nrow(bg), l = 1)
+    bg <- gtable::gtable_add_rows(bottom, unit(1,"null"), -1)
+    bg <- gtable::gtable_add_grob(bg, fg, t = nrow(bg), l = 1)
   } else {
     bg <- fg
   }
   
-  # tg <- lg <- bg <- rg <- fg
   ## 3x3 cells (corners contain nullGrob)
   grobs = list(fg, tg,   fg, 
                lg, core, rg, 
@@ -95,11 +93,11 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
   
   widths <- unit.c(sum(left$widths), width, sum(right$widths))
   heights <- unit.c(sum(top$heights), height, sum(bottom$heights))
-  all <- gtable_matrix("all", grobs = matrix(grobs, ncol=3, nrow=3, byrow = TRUE), 
-                       widths = widths, heights = heights)
+  all <- gtable::gtable_matrix("all", grobs = matrix(grobs, ncol=3, nrow=3, byrow = TRUE), 
+                               widths = widths, heights = heights)
   
   if(debug){
-    hints <- rectGrob(gp=gpar(fill=NA, lty=2, lwd=0.2))
+    hints <- grid::rectGrob(gp=gpar(fill=NA, lty=2, lwd=0.2))
     tl <- expand.grid(t=1:3, l=1:3)
     all <- gtable::gtable_add_grob(all, replicate(9, hints, simplify = FALSE), 
                                    t=tl$t, l=tl$l, z=Inf, name="debug")
@@ -109,11 +107,13 @@ gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=F
   all
 }
 
-#' @export
-.dummy_gtable <- gtable::gtable_matrix("placeholder", matrix(replicate(9, grid::nullGrob(), simplify = FALSE), 3, 3), 
-                                       widths=rep(unit(1,"null"), 3), 
-                                       heights = rep(unit(1,"null"), 3))
+.tmp <- gtable::gtable_matrix("placeholder", matrix(replicate(9, grid::nullGrob(), simplify = FALSE), 3, 3), 
+                              widths=rep(unit(1,"null"), 3), 
+                              heights = rep(unit(1,"null"), 3))
+.tmp$layout$name[5] <- "panel"
 
+#' @export
+.dummy_gtable <- .tmp
 
 #' @importFrom ggplot2 ggplot theme_void
 #' @export
@@ -170,7 +170,7 @@ ggarrange <- function(..., plots = list(...),
   
   n <- length(plots)
   grobs <- lapply(plots, ggplotGrob)
-
+  
   
   ## logic for the layout
   # if nrow/ncol supplied, honour this
@@ -212,6 +212,9 @@ ggarrange <- function(..., plots = list(...),
     ncol = nm[2]
   }
   
+  if(n %/% nrow) { # trouble, we need to add dummy grobs to fill the layout
+    grobs <- c(grobs, rep(list(.dummy_gtable), nrow*ncol - n))
+  }
   
   ## case numeric
   if(is.numeric(widths)) widths <- lapply(widths, unit, "null")
@@ -226,32 +229,31 @@ ggarrange <- function(..., plots = list(...),
   if(grid::is.unit(widths)) widths <- as.unit.list(widths)
   if(grid::is.unit(heights)) widths <- as.unit.list(heights)
   
+  ## split the list into rows/cols
+  nrc <- if(byrow) nrow else ncol
+  if(nrc==1) splits <- rep(1, n) else {
+    splits <- cut(seq_along(grobs), nrc, labels = seq_len(nrc))
+  }
+  
+  
+  ## widths and heights refer to the layout
+  # repeat for corresponding grobs
+  widths <- widths[splits]
+  heights <- heights[splits]
+  
   
   fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, 
                MoreArgs = list(debug=debug), SIMPLIFY = FALSE)
   
-  if(n %/% nrow) { # trouble, we need to add dummy grobs to fill the layout
-    fg <- c(fg, rep(list(.dummy_gtable), nrow*ncol - n))
-  }
-  
+  spl <- split(fg, splits)
   if(byrow){
-    
-    if(nrow==1) splits <- rep(1, n) else
-      splits <- cut(seq_along(fg), nrow, labels = seq_len(nrow))
-    spl <- split(fg, splits)
     rows <- lapply(spl, function(.r) do.call(gridExtra::cbind.gtable, .r))
     all <- do.call(gridExtra::rbind.gtable, rows)
-    
   } else { # fill colwise
-    
-    if(ncol==1) splits <- rep(1, n) else
-      splits <- cut(seq_along(fg), ncol, labels = seq_len(ncol))
-    spl <- split(fg, splits)
     cols <- lapply(spl, function(.c) do.call(gridExtra::rbind.gtable, .c))
     all <- do.call(gridExtra::cbind.gtable, cols)
-    
   }
-   
+  
   if(draw) {
     if(newpage) grid.newpage()
     grid.draw(all)

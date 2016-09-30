@@ -231,15 +231,21 @@ ggarrange <- function(..., plots = list(...),
   
   ## split the list into rows/cols
   nrc <- if(byrow) nrow else ncol
-  if(nrc==1) splits <- rep(1, n) else {
-    splits <- cut(seq_along(grobs), nrc, labels = seq_len(nrc))
+  if(nrc==1) {
+    splits <- rep(1, n) 
+  } else {
+    
+    seqgrobs <- seq_along(grobs)
+    splits <- cut(seqgrobs, nrc, labels = seq_len(nrc))
+    ## widths and heights refer to the layout
+    # repeat for corresponding grobs
+    
+    seqsize <- splits[c(matrix(seqgrobs, nrow = nrow, byrow=byrow))]
+    
+    widths <- widths[seqsize]
+    heights <- heights[seqsize]
   }
   
-  
-  ## widths and heights refer to the layout
-  # repeat for corresponding grobs
-  widths <- widths[splits]
-  heights <- heights[splits]
   
   
   fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, 

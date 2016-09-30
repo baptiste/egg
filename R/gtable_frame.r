@@ -240,10 +240,11 @@ ggarrange <- function(..., plots = list(...),
     ## widths and heights refer to the layout
     # repeat for corresponding grobs
     
-    seqsize <- splits[c(matrix(seqgrobs, nrow = nrow, byrow=byrow))]
+    seqw <- splits[c(matrix(seqgrobs, nrow = nrow, byrow=byrow))]
+    seqh <- splits[c(matrix(seqgrobs, nrow = nrow, byrow=!byrow))]
     
-    widths <- widths[seqsize]
-    heights <- heights[seqsize]
+    widths <- widths[seqw]
+    heights <- heights[seqh]
   }
   
   

@@ -79,3 +79,12 @@ ggarrange(p1, p2, widths = 1:2)
 ```
 
 ![](inst/demo/ggarrange-1.png)
+
+Widths and heights should correspond to the layout.
+
+``` r
+p <- ggplot()
+ggarrange(p, p, p, widths = 1:2, heights=c(1, 3))
+```
+
+![](inst/demo/ggarrangelayout-1.png)

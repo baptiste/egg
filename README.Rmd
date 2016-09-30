@@ -84,3 +84,12 @@ theme()
 ggarrange(p1, p2, widths = 1:2)
 
 ```
+
+Widths and heights should correspond to the layout.
+
+
+```{r ggarrangelayout}
+p <- ggplot()
+ggarrange(p, p, p, widths = 1:2, heights=c(1, 3))
+```
+

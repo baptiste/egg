@@ -84,7 +84,7 @@ Widths and heights should correspond to the layout.
 
 ``` r
 p <- ggplot()
-ggarrange(p, p, p, widths = 1:2, heights=c(1, 3))
+ggarrange(p, p, p, widths = c(3,1), heights=c(5, 1))
 ```
 
 ![](inst/demo/ggarrangelayout-1.png)

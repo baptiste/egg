@@ -165,6 +165,10 @@ ggarrange <- function(..., plots = list(...),
                       nrow = NULL, ncol = NULL, 
                       widths = NULL, heights = NULL,
                       byrow = TRUE, 
+                      top = NULL, bottom = NULL, 
+                      left = NULL, right = NULL,
+                      padding = unit(0.5,"line"),
+                      clip = "on",
                       draw = TRUE, newpage = TRUE,
                       debug = FALSE){
   
@@ -248,24 +252,66 @@ ggarrange <- function(..., plots = list(...),
   }
   
   
-  
   fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, 
                MoreArgs = list(debug=debug), SIMPLIFY = FALSE)
   
   spl <- split(fg, splits)
   if(byrow){
     rows <- lapply(spl, function(.r) do.call(gridExtra::cbind.gtable, .r))
-    all <- do.call(gridExtra::rbind.gtable, rows)
+    gt <- do.call(gridExtra::rbind.gtable, rows)
   } else { # fill colwise
     cols <- lapply(spl, function(.c) do.call(gridExtra::rbind.gtable, .c))
-    all <- do.call(gridExtra::cbind.gtable, cols)
+    gt <- do.call(gridExtra::cbind.gtable, cols)
+  }
+  
+  
+  ## titles given as strings are converted to text grobs
+  if(is.character(top)){
+    top <- textGrob(top)
+  }
+  if(is.grob(top)){
+    h <- grobHeight(top) + padding
+    gt <- gtable_add_rows(gt, heights=h, 0)
+    gt <- gtable_add_grob(gt, top, t=1, l=1, r=ncol(gt), z=Inf,
+                          clip = clip)
+  }
+  if(is.character(bottom)){    
+    bottom <- textGrob(bottom)
+  }
+  if(is.grob(bottom)){
+    h <- grobHeight(bottom) + padding
+    gt <- gtable_add_rows(gt, heights = h, -1)
+    gt <- gtable_add_grob(gt, bottom, 
+                          t=nrow(gt), l=1, r=ncol(gt), z=Inf,
+                          clip = clip)
+  }
+  if(is.character(left)){
+    left <- textGrob(left, rot = 90)
+  }
+  if(is.grob(left)){
+    w <- grobWidth(left) + padding
+    gt <- gtable_add_cols(gt, widths=w, 0)
+    gt <- gtable_add_grob(gt, left, t=1, b=nrow(gt), 
+                          l=1, r=1, z=Inf,
+                          clip = clip)
+  }
+  if(is.character(right)){
+    right <- textGrob(right, rot = -90)
+  }
+  if(is.grob(right)){
+    w <- grobWidth(right) + padding
+    gt <- gtable_add_cols(gt, widths=w, -1)
+    gt <- gtable_add_grob(gt, right, 
+                          t=1, b=nrow(gt), 
+                          l=ncol(gt), r=ncol(gt), z=Inf,
+                          clip = clip)
   }
   
   if(draw) {
     if(newpage) grid.newpage()
-    grid.draw(all)
+    grid.draw(gt)
   }
   
-  invisible(all) # return the full gtable
+  invisible(gt) # return the full gtable
 }
 

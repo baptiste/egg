@@ -311,7 +311,15 @@ ggarrange <- function(..., plots = list(...),
     if(newpage) grid.newpage()
     grid.draw(gt)
   }
-  
+  class(gt) <- c("egg", class(gt))
   invisible(gt) # return the full gtable
 }
 
+
+##' @noRd
+##' @importFrom grDevices dev.interactive dev.new
+##' @export
+print.egg = function(x, ...) {
+  grid.newpage()
+  grid.draw(x)
+}

@@ -47,4 +47,3 @@ grid.newpage()
 combined <- cbind(fg12, fg3)
 grid.draw(combined)
 }
-

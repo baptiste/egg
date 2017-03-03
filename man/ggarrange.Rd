@@ -5,8 +5,9 @@
 \title{gtable_frame}
 \usage{
 ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
-  widths = NULL, heights = NULL, byrow = TRUE, draw = TRUE,
-  newpage = TRUE, debug = FALSE)
+  widths = NULL, heights = NULL, byrow = TRUE, top = NULL,
+  bottom = NULL, left = NULL, right = NULL, padding = unit(0.5, "line"),
+  clip = "on", draw = TRUE, newpage = TRUE, debug = FALSE)
 }
 \arguments{
 \item{...}{ggplot objects}
@@ -42,4 +43,3 @@ p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
 grid.newpage()
 grid.draw(ggarrange(p1, p2, widths = c(2,1)))
 }
-

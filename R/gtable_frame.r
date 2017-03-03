@@ -148,7 +148,7 @@ as.unit.list <- function (unit)
 #' @param debug logical, show layout with thin lines
 #'
 #'
-#' @importFrom grid is.unit
+#' @importFrom grid is.unit is.grob
 #' @return gtable of aligned plots
 #' @export
 #' @examples 

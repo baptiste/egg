@@ -30,4 +30,3 @@ grid.arrange(grobs=pl, widths=c(1.2,1,1),
              layout_matrix = rbind(c(1, 2, 3),
                                    c(4, 4, 4)))
 }
-

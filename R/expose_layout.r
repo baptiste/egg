@@ -1,4 +1,3 @@
-
 #' expose_layout
 #'
 #' @param p ggplot

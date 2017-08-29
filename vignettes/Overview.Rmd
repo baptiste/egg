@@ -1,0 +1,107 @@
+---
+title: "Overview of the egg package"
+author: "Baptiste Auguié"
+date: '`r Sys.Date()`'
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{egg: (fragile) extensions for ggplot2}
+output:
+  knitr:::html_vignette:
+    toc: yes
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(egg)
+library(grid)
+library(gridExtra)
+library(gtable)
+library(knitr)
+opts_chunk$set(message=FALSE, fig.width=7, fig.height=3)
+```
+
+## Exposing ggplot2 layouts
+
+The following function is used to illustrate the  structure of ggplot2 plots.
+
+```{r layout}
+p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)
+p2 <- qplot(mpg, data = mtcars) + ggtitle("title")
+p3 <- qplot(mpg, data = mtcars, geom = "dotplot")
+p4 <- p1 + facet_wrap(~carb, nrow=1) + theme(legend.position="none") +
+  ggtitle("facetted plot")
+pl <- lapply(list(p1,p2, p3, p4), expose_layout, FALSE, FALSE)
+grid.arrange(grobs=pl, widths=c(1.2,1,1),
+             layout_matrix = rbind(c(1, 2, 3),
+                                   c(4, 4, 4)))
+```
+
+
+## Setting panel size
+
+In some cases, having ggplot2 expand the plot panel to best fit the available space isn't ideal: for instance, we may want to produce multiple plots to appear on different slides of a presentation, and the successive pages should have the exact same layout for smooth visual transition. Another use-case is to embed multiple separate graphics in a drawing/page layout software. In this situation the plot alignement will be made manually, but the plots should not be rescaled (otherwise the fonts would be distorted). For such situations, the easiest solution is to set fixed dimensions to the gtable produced by ggplot2. 
+
+```{r panel, fig.height=3.5}
+p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)
+p2 <- p1 + facet_wrap(~carb, nrow=1) 
+grid.arrange(grobs=lapply(list(p1,p2), set_panel_size, 
+                          width = unit(2,"cm"), height = unit(1, "in")))
+```
+
+Note that the total size is now fixed, therefore when exporting the plot on a device it can be useful to query the size and set the width and height accordingly, to avoid clipping or white margins. This extra step is enabled by default when saving the results to a file.
+
+## Aligning complex ggplots
+
+We can extend the previous code to align complex facetted plots. One possible strategy, illustrated below, is to take the following steps:
+
+- decompose each plot into a 3x3 layout, where the central cell corresponds to the core panels, surrounded by axes, legends, etc.
+- set the core width and height to a fixed dimension
+- align the individual 3x3 gtables using rbind/cbind
+
+
+```{r frame}
+p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+  geom_point() 
+
+p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+  geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
+  guides(colour="none") +
+  theme()
+
+p3 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+  geom_point() + facet_grid(. ~ cyl, scales = "free")
+
+g1 <- ggplotGrob(p1);
+g2 <- ggplotGrob(p2);
+g3 <- ggplotGrob(p3);
+fg1 <- gtable_frame(g1, debug=TRUE)
+fg2 <- gtable_frame(g2, debug=TRUE)
+fg12 <- gtable_frame(rbind(fg1,fg2), width=unit(2,"null"), height=unit(1,"null"))
+fg3 <- gtable_frame(g3, width=unit(1,"null"), height=unit(1,"null"), debug=TRUE)
+grid.newpage()
+combined <- cbind(fg12, fg3)
+grid.draw(combined)
+```
+
+## Arranging and aligning multiple plots
+
+This is a convenience function based on the above, more useful than `grid.arrange` for the special case of ggplots as it aligns the plot panels,
+
+```{r ggarrange}
+p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+geom_point() 
+p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
+geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
+guides(colour="none") +
+theme()
+
+ggarrange(p1, p2, widths = 1:2)
+
+```
+
+Widths and heights can be provided for the layout.
+
+```{r ggarrangelayout}
+p <- ggplot()
+ggarrange(p, p, p, widths = c(3,1), heights=c(5, 1))
+```
+

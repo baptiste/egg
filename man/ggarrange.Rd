@@ -2,7 +2,7 @@
 % Please edit documentation in R/gtable_frame.r
 \name{ggarrange}
 \alias{ggarrange}
-\title{gtable_frame}
+\title{ggarrange}
 \usage{
 ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
   widths = NULL, heights = NULL, byrow = TRUE, top = NULL,
@@ -24,13 +24,29 @@ ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
 
 \item{byrow}{logical, fill by rows}
 
+\item{top}{optional string, or grob}
+
+\item{bottom}{optional string, or grob}
+
+\item{left}{optional string, or grob}
+
+\item{right}{optional string, or grob}
+
+\item{padding}{unit of length one, margin around annotations}
+
+\item{clip}{argument of gtable}
+
+\item{draw}{logical: draw or return a grob}
+
+\item{newpage}{logical: draw on a new page}
+
 \item{debug}{logical, show layout with thin lines}
 }
 \value{
 gtable of aligned plots
 }
 \description{
-gtable_frame
+ggarrange
 }
 \examples{
 library(grid)

@@ -1,10 +1,10 @@
 ---
 title: "Overview of the egg package"
-author: "Baptiste Auguié"
+author: "Baptiste Auguie"
 date: '`r Sys.Date()`'
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{egg: (fragile) extensions for ggplot2}
+  %\VignetteIndexEntry{Overview of the egg package}
 output:
   knitr:::html_vignette:
     toc: yes
@@ -19,9 +19,11 @@ library(knitr)
 opts_chunk$set(message=FALSE, fig.width=7, fig.height=3)
 ```
 
+This document provides a brief overview of the main utiilty functions included in the `egg` package.
+
 ## Exposing ggplot2 layouts
 
-The following function is used to illustrate the  structure of ggplot2 plots.
+The function `expose_layout` can be useful to illustrate the structure of ggplot2 plots, e.g. when trying to customise and/or post-process the gtable layout.
 
 ```{r layout}
 p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)
@@ -40,6 +42,8 @@ grid.arrange(grobs=pl, widths=c(1.2,1,1),
 
 In some cases, having ggplot2 expand the plot panel to best fit the available space isn't ideal: for instance, we may want to produce multiple plots to appear on different slides of a presentation, and the successive pages should have the exact same layout for smooth visual transition. Another use-case is to embed multiple separate graphics in a drawing/page layout software. In this situation the plot alignement will be made manually, but the plots should not be rescaled (otherwise the fonts would be distorted). For such situations, the easiest solution is to set fixed dimensions to the gtable produced by ggplot2. 
 
+The function `set_panel_size` helps set the panel size (width, height) to absolute measurements in the form of grid units. In the case of a facetted plot, all panels are set to the same value.
+
 ```{r panel, fig.height=3.5}
 p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)
 p2 <- p1 + facet_wrap(~carb, nrow=1) 
@@ -51,11 +55,11 @@ Note that the total size is now fixed, therefore when exporting the plot on a de
 
 ## Aligning complex ggplots
 
-We can extend the previous code to align complex facetted plots. One possible strategy, illustrated below, is to take the following steps:
+`gridExtra::grid.arrange` provides no way to align the panels of individual plots. While this is achievable with low-level `gtable` functions, it often requires substantial effort on a case-by-case basis. The `egg` package introduces a general strategy for such layout manipulations, with the following steps:
 
 - decompose each plot into a 3x3 layout, where the central cell corresponds to the core panels, surrounded by axes, legends, etc.
 - set the core width and height to a fixed dimension
-- align the individual 3x3 gtables using rbind/cbind
+- align the individual 3x3 gtables using `rbind`/`cbind`
 
 
 ```{r frame}
@@ -75,16 +79,16 @@ g2 <- ggplotGrob(p2);
 g3 <- ggplotGrob(p3);
 fg1 <- gtable_frame(g1, debug=TRUE)
 fg2 <- gtable_frame(g2, debug=TRUE)
-fg12 <- gtable_frame(rbind(fg1,fg2), width=unit(2,"null"), height=unit(1,"null"))
+fg12 <- gtable_frame(gtable_rbind(fg1,fg2), width=unit(2,"null"), height=unit(1,"null"))
 fg3 <- gtable_frame(g3, width=unit(1,"null"), height=unit(1,"null"), debug=TRUE)
 grid.newpage()
-combined <- cbind(fg12, fg3)
+combined <- gtable_cbind(fg12, fg3)
 grid.draw(combined)
 ```
 
 ## Arranging and aligning multiple plots
 
-This is a convenience function based on the above, more useful than `grid.arrange` for the special case of ggplots as it aligns the plot panels,
+Using this generic strategy, we can easily align arbitrary plots (facetted or single-panel), with the convenience function `ggarrange`,
 
 ```{r ggarrange}
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
@@ -98,10 +102,20 @@ ggarrange(p1, p2, widths = 1:2)
 
 ```
 
-Widths and heights can be provided for the layout.
+Note that custom widths and heights may be provided for the layout.
 
 ```{r ggarrangelayout}
 p <- ggplot()
 ggarrange(p, p, p, widths = c(3,1), heights=c(5, 1))
+```
+
+## Symmetric axis scale
+
+The function `symmetrise_scale` helps align the 0 value of adjacent panels in facetted plots with asymmetric range of data in each group.
+
+```{r symmetrise}
+df = data.frame(x=c(1,2), y=c(5,0.2), group=c(1,2))
+p <- ggplot(df, aes(x=x, y=y)) + geom_point() + facet_wrap(~group, scale="free")
+symmetrise_scale(p, "y")
 ```
 

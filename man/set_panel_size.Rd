@@ -4,7 +4,7 @@
 \alias{set_panel_size}
 \title{set_panel_size}
 \usage{
-set_panel_size(p = NULL, g = ggplotGrob(p), file = NULL,
+set_panel_size(p = NULL, g = ggplot2::ggplotGrob(p), file = NULL,
   margin = unit(1, "mm"), width = unit(4, "cm"), height = unit(4, "cm"))
 }
 \arguments{

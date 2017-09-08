@@ -8,6 +8,7 @@
 #'
 #' @importFrom gtable gtable_matrix gtable_add_grob gtable_add_cols gtable_add_rows
 #' @importFrom grid unit unit.c nullGrob rectGrob grid.newpage grid.draw
+#' @importFrom gridExtra gtable_rbind gtable_cbind
 #' @return 3x3 gtable wrapping the plot
 #' @export
 #' @examples 
@@ -29,10 +30,10 @@
 #' g3 <- ggplotGrob(p3);
 #' fg1 <- gtable_frame(g1)
 #' fg2 <- gtable_frame(g2)
-#' fg12 <- gtable_frame(rbind(fg1,fg2), width=unit(2,"null"), height=unit(1,"null"))
+#' fg12 <- gtable_frame(gtable_rbind(fg1,fg2), width=unit(2,"null"), height=unit(1,"null"))
 #' fg3 <- gtable_frame(g3, width=unit(1,"null"), height=unit(1,"null"))
 #' grid.newpage()
-#' combined <- cbind(fg12, fg3)
+#' combined <- gtable_cbind(fg12, fg3)
 #' grid.draw(combined)
 gtable_frame <- function(g, width=unit(1,"null"), height=unit(1,"null"), debug=FALSE){
   panels <- g[["layout"]][grepl("panel", g[["layout"]][["name"]]), ]
@@ -136,19 +137,27 @@ as.unit.list <- function (unit)
 
 
 
-#' gtable_frame
+#' ggarrange
 #'
 #' @param ... ggplot objects
 #' @param plots list of ggplots
-#' @param heights list of requested heights
-#' @param widths list of requested widths
 #' @param nrow number of rows
 #' @param ncol number of columns
+#' @param heights list of requested heights
+#' @param widths list of requested widths
 #' @param byrow logical, fill by rows
+#' @param top optional string, or grob
+#' @param bottom optional string, or grob
+#' @param left optional string, or grob
+#' @param right optional string, or grob
+#' @param padding unit of length one, margin around annotations
+#' @param clip argument of gtable
+#' @param newpage logical: draw on a new page
+#' @param draw logical: draw or return a grob
 #' @param debug logical, show layout with thin lines
-#'
-#'
 #' @importFrom grid is.unit is.grob
+#' @importFrom grDevices n2mfrow
+#' @importFrom gridExtra gtable_cbind gtable_rbind
 #' @return gtable of aligned plots
 #' @export
 #' @examples 
@@ -173,7 +182,7 @@ ggarrange <- function(..., plots = list(...),
                       debug = FALSE){
   
   n <- length(plots)
-  grobs <- lapply(plots, ggplotGrob)
+  grobs <- lapply(plots, ggplot2::ggplotGrob)
   
   
   ## logic for the layout
@@ -257,11 +266,11 @@ ggarrange <- function(..., plots = list(...),
   
   spl <- split(fg, splits)
   if(byrow){
-    rows <- lapply(spl, function(.r) do.call(gridExtra::cbind.gtable, .r))
-    gt <- do.call(gridExtra::rbind.gtable, rows)
+    rows <- lapply(spl, function(.r) do.call(gridExtra::gtable_cbind, .r))
+    gt <- do.call(gridExtra::gtable_rbind, rows)
   } else { # fill colwise
-    cols <- lapply(spl, function(.c) do.call(gridExtra::rbind.gtable, .c))
-    gt <- do.call(gridExtra::cbind.gtable, cols)
+    cols <- lapply(spl, function(.c) do.call(gridExtra::gtable_rbind, .c))
+    gt <- do.call(gridExtra::gtable_cbind, cols)
   }
   
   

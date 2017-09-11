@@ -1,12 +1,12 @@
 Package: egg
 Type: Package
-Title: Extensions for 'ggplot2'
+Title: Extensions for 'ggplot2', to align plots, and set panel sizes
 Version: 0.2.0
 Authors@R: c(person("Baptiste", "Auguie",
     email = "baptiste.auguie@gmail.com",
     role = c("aut", "cre")))
 License: GPL-3
-Description: Miscellaneous functions to help customise 'ggplot2' layouts.
+Description: Miscellaneous functions to help customise 'ggplot2' objects. High-level functions are provided to post-process 'ggplot2' layouts and allow alignment between plot panels, as well as setting panel sizes to fixed values. 
 VignetteBuilder: knitr
 Depends:
     gridExtra (>= 2.3),

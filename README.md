@@ -23,7 +23,7 @@ grid.arrange(
 )
 ```
 
-![](README-layout-1.png)
+![](tools/README/layout-1.png)
 
 Setting panel size
 ------------------
@@ -39,7 +39,7 @@ grid.arrange(grobs = lapply(
 ))
 ```
 
-![](README-panel-1.png)
+![](tools/README/panel-1.png)
 
 Aligning complex ggplots
 ------------------------
@@ -79,7 +79,7 @@ combined <- gtable_cbind(fg12, fg3)
 grid.draw(combined)
 ```
 
-![](README-frame-1.png)
+![](tools/README/frame-1.png)
 
 Arranging and aligning multiple plots
 -------------------------------------
@@ -97,7 +97,7 @@ p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
 ggarrange(p1, p2, widths = 1:2)
 ```
 
-![](README-ggarrange-1.png)
+![](tools/README/ggarrange-1.png)
 
 Widths and heights should correspond to the layout.
 
@@ -106,4 +106,4 @@ p <- ggplot()
 ggarrange(p, p, p, widths = c(3, 1), heights = c(5, 1))
 ```
 
-![](README-ggarrangelayout-1.png)
+![](tools/README/ggarrangelayout-1.png)

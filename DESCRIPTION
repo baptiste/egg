@@ -1,6 +1,6 @@
 Package: egg
 Type: Package
-Title: Extensions for 'ggplot2', to align plots, and set panel sizes
+Title: Extensions for 'ggplot2', to Align Plots, and Set Panel Sizes
 Version: 0.2.0
 Authors@R: c(person("Baptiste", "Auguie",
     email = "baptiste.auguie@gmail.com",

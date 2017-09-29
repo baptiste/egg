@@ -230,8 +230,10 @@ ggarrange <- function(..., plots = list(...),
   }
   
   ## case numeric
-  if(is.numeric(widths)) widths <- lapply(widths, unit, "null")
-  if(is.numeric(heights)) heights <- lapply(heights, unit, "null")
+  if(is.numeric(widths) && !inherits(widths, "unit")) 
+    widths <- lapply(widths, unit, "null")
+  if(is.numeric(heights) && !inherits(heights, "unit")) 
+    heights <- lapply(heights, unit, "null")
   
   ## sizes
   if(is.null(widths)) widths <- lapply(rep(1, n), unit, "null")
@@ -241,6 +243,12 @@ ggarrange <- function(..., plots = list(...),
   # only unit.list units work well with `[` so convert to this class
   if(grid::is.unit(widths)) widths <- as.unit.list(widths)
   if(grid::is.unit(heights)) widths <- as.unit.list(heights)
+  
+  # indexing is problematic, wrap in list
+  if(grid::is.unit(widths) && length(widths) == 1)
+    widths <- list(widths)
+  if(grid::is.unit(heights) && length(heights) == 1)
+    heights <- list(heights)
   
   ## split the list into rows/cols
   nrc <- if(byrow) nrow else ncol

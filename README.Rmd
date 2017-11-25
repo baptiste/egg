@@ -125,17 +125,22 @@ ggarrange(p, p, p, widths = c(3, 1), heights = c(5, 1))
 The function `geom_custom` extends the ggplot2 function `annotation_custom` to cases where multiple grobs are to be placed, e.g. on different panels, or at different positions in a plot. This geom is a bit special in that it does not truly respect a *grammar of graphics* — arbitrary grobs can be plotted, with no explicit mapping to variables. Its typical use would be to place illustrating images on a plot. 
 
 ```{r custompics}
-codes <- data.frame(country = c("nz","ar","fr","gb","es"))
+codes <- data.frame(country = c("nz","ca","ar","fr","gb","es"))
 codes$y <- runif(nrow(codes))
-codes$url <- sapply(codes$country, sprintf, fmt="https://github.com/hjnilsson/country-flags/raw/master/png250px/%s.png")
+# codes$url <- sapply(codes$country, sprintf, fmt="https://github.com/hjnilsson/country-flags/raw/master/png250px/%s.png")
+# 
+# gl <- Map(function(x, y) {
+#   destfile <- paste0(y, '.png')
+#   if(!file.exists(destfile))
+#     download.file(x, destfile = destfile)
+#   png::readPNG(destfile)
+# }, x = codes$url, y = codes$country)
+# codes$raster <- I(gl)
 
-gl <- Map(function(x, y) {
-  destfile <- paste0(y, '.png')
-  if(!file.exists(destfile))
-    download.file(x, destfile = destfile)
-  png::readPNG(destfile)
-}, x = codes$url, y = codes$country)
-
+gl <- lapply(codes$country, 
+                    function(.x) png::readPNG(system.file("flags", 
+                                             paste0(.x,".png"),
+                                             package="egg")))
 codes$raster <- I(gl)
 
 ggplot(codes, aes(x = country, y = y)) + 

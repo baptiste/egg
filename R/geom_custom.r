@@ -4,10 +4,11 @@
 #' @param mapping mapping
 #' @param data data
 #' @param inherit.aes inherit.aes
+#' @param ... arguments passed to the geom's draw_group method
 #'
 #' @importFrom gtable gtable_matrix gtable_add_grob gtable_add_cols gtable_add_rows
 #' @importFrom grid nullGrob unit grobTree editGrob
-#' @importFrom ggplot2 ggproto ggproto_parent
+#' @importFrom ggplot2 ggproto ggproto_parent layer
 #' @return layer
 #' @export
 #' @examples 

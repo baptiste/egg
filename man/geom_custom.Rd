@@ -12,6 +12,8 @@ geom_custom(mapping = NULL, data = NULL, inherit.aes = TRUE, ...)
 \item{data}{data}
 
 \item{inherit.aes}{inherit.aes}
+
+\item{...}{arguments passed to the geom's draw_group method}
 }
 \value{
 layer

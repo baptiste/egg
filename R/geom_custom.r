@@ -49,15 +49,15 @@ GeomCustom <- ggproto(
     data
   },
   
-  draw_group = function(data, panel_scales, coord, grob_fun, ...) {
+  
+  draw_group = function(data, panel_scales, coord, grob_fun, fun_params) {
     coords <- coord$transform(data, panel_scales)    
-    
     gl <- lapply(seq_along(data$data), 
                  function(i) {
-                   .g <- grob_fun(data$data[[i]], ...)
+                   .g <- do.call(grob_fun, c(list(data$data[[i]]), fun_params))
                    grid::editGrob(.g, 
-                                  x = unit(coords$x[i], "native"),
-                                  y = unit(coords$y[i], "native"))
+                                  x=unit(coords$x[i],"native"),
+                                  y=unit(coords$y[i],"native"))
                  })
     ggplot2:::ggname("geom_custom", do.call(grobTree, gl))
   },

@@ -115,7 +115,7 @@ ggarrange(p, p, p, widths = c(3, 1), heights = c(5, 1))
 Custom geom
 -----------
 
-The function `geom_custom` extends the ggplot2 function `annotation_custom` to cases where multiple grobs are to be placed, e.g. on different panels, or at different positions in a plot. This geom is a bit special in that it does not truly respect a *grammar of graphics* -- arbitrary grobs can be plotted, with no explicit mapping to variables. Its typical use would be to place illustrating images on a plot.
+The function `geom_custom` extends the ggplot2 function `annotation_custom` to cases where multiple grobs are to be placed, e.g. on different panels, or at different positions in a plot. This geom is a bit special in that it does not truly respect a *grammar of graphics* — arbitrary grobs can be plotted, with no explicit mapping to variables. Its typical use would be to place illustrating images on a plot.
 
 ``` r
 codes <- data.frame(country = c("nz","ar","fr","gb","es"))
@@ -139,3 +139,42 @@ ggplot(codes, aes(x = country, y = y)) +
 ```
 
 ![](tools/README/custompics-1.png)
+
+Because the grobs are mapped independently of the main ggplot, this geom also allows the placing of arbitrary annotations without interference from transformed coordinate systems.
+
+``` r
+custom_grob <- function(data, x=0.5,y=0.5){
+  grob(data=data,x=x,y=y, cl="custom")
+}
+preDrawDetails.custom <- function(x){
+  pushViewport(viewport(x=x$x,y=x$y))
+}
+postDrawDetails.custom <- function(x){
+  upViewport()
+}
+drawDetails.custom <- function(x, recording=FALSE, ...){
+  grid.rect(mean(x$data$x), mean(x$data$y), 
+            width=diff(range(x$data$x)), 
+            height=diff(range(x$data$y)))
+  grid.lines(x$data$x, x$data$y, gp=gpar(col=x$data$col,lwd=2), default.units = "native")
+}
+
+
+d <- data.frame(x=rep(1:3, 4), f=rep(letters[1:4], each=3))
+gl <- lapply(1:4, function(ii){
+  data.frame(x=seq(0.4,0.6,length=10),
+             y = runif(10,0.45,0.55),
+             col = rainbow(nrow(d))[ii],
+             stringsAsFactors = FALSE)
+})
+dummy <- data.frame(f=letters[1:4], data = I(gl))
+
+ggplot(d, aes(f,x)) +
+  facet_wrap(~f, nrow=1)+
+  coord_polar() +
+  geom_point()+
+  geom_custom(data = dummy, aes(data = data, x = f, y = 2), 
+              grob_fun = custom_grob) 
+```
+
+![](tools/README/customgrob-1.png)

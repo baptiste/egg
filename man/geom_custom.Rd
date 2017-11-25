@@ -20,6 +20,7 @@ layer
 geom_custom
 }
 \examples{
+library(grid)
 d <- data.frame(x=rep(1:3, 4), f=rep(letters[1:4], each=3))
 gl <- replicate(4, matrix(sample(palette(), 9, TRUE), 3, 3), FALSE)
 dummy <- data.frame(f=letters[1:4], data = I(gl))

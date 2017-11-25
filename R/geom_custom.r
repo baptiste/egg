@@ -50,7 +50,7 @@ GeomCustom <- ggproto(
   },
   
   
-  draw_group = function(data, panel_scales, coord, grob_fun, fun_params) {
+  draw_group = function(data, panel_scales, coord, grob_fun, fun_params=list()) {
     coords <- coord$transform(data, panel_scales)    
     gl <- lapply(seq_along(data$data), 
                  function(i) {

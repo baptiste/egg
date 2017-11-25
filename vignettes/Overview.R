@@ -91,3 +91,53 @@ p <- ggplot(df, aes(x = x, y = y)) +
                 "free")
 symmetrise_scale(p, "y")
 
+## ----custompics----------------------------------------------------------
+codes <- data.frame(country = c("nz","ar","fr","gb","es"))
+codes$y <- runif(nrow(codes))
+codes$url <- sapply(codes$country, sprintf, fmt="https://github.com/hjnilsson/country-flags/raw/master/png250px/%s.png")
+
+gl <- Map(function(x, y) {
+  destfile <- paste0(y, '.png')
+  if(!file.exists(destfile))
+  download.file(x, destfile = destfile)
+  png::readPNG(destfile)
+}, x = codes$url, y = codes$country)
+
+codes$raster <- I(gl)
+
+ggplot(codes, aes(x = country, y = y)) + 
+  geom_point() +
+  geom_custom(data = codes, aes(data=raster), 
+              grob_fun = rasterGrob, 
+              fun_params = list(height=unit(1,"cm")))
+
+## ----customgrob----------------------------------------------------------
+custom_grob <- function(data, x=0.5,y=0.5){
+  grob(data=data,x=x,y=y, cl="custom")
+}
+preDrawDetails.custom <- function(x){
+  pushViewport(viewport(x=x$x,y=x$y))
+}
+postDrawDetails.custom <- function(x){
+  upViewport()
+}
+drawDetails.custom <- function(x, recording=FALSE, ...){
+  grid.lines(x$data$x, x$data$y, gp=gpar(col=x$data$col,lwd=2), default.units = "native")
+}
+
+
+d <- data.frame(x=rep(1:3, 4), f=rep(letters[1:4], each=3))
+gl <- replicate(4, data.frame(x=seq(0.4,0.6,length=10),
+                              y = runif(10,0.45,0.55),
+                              col = sample(palette())[1]), FALSE)
+dummy <- data.frame(f=letters[1:4], data = I(gl))
+
+ggplot(d, aes(f,x)) +
+  facet_wrap(~f)+
+  coord_polar() +
+  theme_bw() +
+  geom_point()+
+  geom_custom(data = dummy, aes(data = data, x = f, y = 2), 
+              grob_fun = custom_grob) +
+  theme_minimal()
+

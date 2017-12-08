@@ -7,7 +7,8 @@
 ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
   widths = NULL, heights = NULL, byrow = TRUE, top = NULL,
   bottom = NULL, left = NULL, right = NULL, padding = unit(0.5, "line"),
-  clip = "on", draw = TRUE, newpage = TRUE, debug = FALSE)
+  clip = "on", draw = TRUE, newpage = TRUE, debug = FALSE,
+  labels = NULL, label.args = list(gp = grid::gpar(font = 4, cex = 1.2)))
 }
 \arguments{
 \item{...}{ggplot objects}
@@ -41,6 +42,10 @@ ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
 \item{newpage}{logical: draw on a new page}
 
 \item{debug}{logical, show layout with thin lines}
+
+\item{labels}{labels}
+
+\item{label.args}{label parameters}
 }
 \value{
 gtable of aligned plots

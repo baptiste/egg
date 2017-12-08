@@ -135,6 +135,17 @@ as.unit.list <- function (unit)
   }
 }
 
+label_grid <- function(labels, 
+                       x=0, hjust=0, 
+                       y=1, vjust=1, 
+                       ..., 
+                       .fun=grid::textGrob){
+  lapply(labels, .fun, 
+         x=x, hjust=hjust,
+         y=y, vjust=vjust,
+         ...)
+  
+}
 
 
 #' ggarrange
@@ -155,6 +166,8 @@ as.unit.list <- function (unit)
 #' @param newpage logical: draw on a new page
 #' @param draw logical: draw or return a grob
 #' @param debug logical, show layout with thin lines
+#' @param labels labels
+#' @param label.args label parameters
 #' @importFrom grid is.unit is.grob
 #' @importFrom grDevices n2mfrow
 #' @importFrom gridExtra gtable_cbind gtable_rbind
@@ -179,11 +192,13 @@ ggarrange <- function(..., plots = list(...),
                       padding = unit(0.5,"line"),
                       clip = "on",
                       draw = TRUE, newpage = TRUE,
-                      debug = FALSE){
+                      debug = FALSE,
+                      labels = NULL, 
+                      label.args = list(gp = grid::gpar(font=4, cex = 1.2))){
   
   n <- length(plots)
   grobs <- lapply(plots, ggplot2::ggplotGrob)
-  
+
   
   ## logic for the layout
   # if nrow/ncol supplied, honour this
@@ -268,9 +283,22 @@ ggarrange <- function(..., plots = list(...),
     heights <- heights[seqh]
   }
   
-  
   fg <- mapply(gtable_frame, g=grobs,  width = widths, height=heights, 
                MoreArgs = list(debug=debug), SIMPLIFY = FALSE)
+  
+  
+  if(!is.null(labels)){
+    stopifnot(length(labels) == length(fg))
+    # make grobs
+    labels <- do.call(label_grid, c(list(labels), label.args))
+    # add each grob to the whole gtable
+    fg <- mapply(function(g, l){
+      gtable::gtable_add_grob(g,l,t=1, l=1, b = nrow(g), r = ncol(g), z = Inf, clip = "off", name = "label")
+    },
+    g = fg, l = labels, 
+    SIMPLIFY = FALSE)
+    
+  }
   
   spl <- split(fg, splits)
   if(byrow){

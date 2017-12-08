@@ -112,6 +112,15 @@ ggarrange(p, p, p, widths = c(3, 1), heights = c(5, 1))
 
 ![](tools/README/ggarrangelayout-1.png)
 
+For convenience, labels can be added to refer to the subfigures. All parameters of `textGrob` can be used for the formatting of the labels, including the positioning (`x`, `hjust`, etc.).
+
+``` r
+ggarrange(p1, p2, p3, ncol=2,
+          labels = c("A", "b)", "iii."), label.args = list(gp=gpar(font=4), x=unit(1,"line"), hjust=0))
+```
+
+![](tools/README/ggarrangelabels-1.png)
+
 Custom geom
 -----------
 

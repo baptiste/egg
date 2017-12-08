@@ -116,7 +116,8 @@ For convenience, labels can be added to refer to the subfigures. All parameters 
 
 ``` r
 ggarrange(p1, p2, p3, ncol=2,
-          labels = c("A", "b)", "iii."), label.args = list(gp=gpar(font=4), x=unit(1,"line"), hjust=0))
+          labels = c("A", "b)", "iii."), 
+          label.args = list(gp=gpar(font=4), x=unit(1,"line"), hjust=0))
 ```
 
 ![](tools/README/ggarrangelabels-1.png)

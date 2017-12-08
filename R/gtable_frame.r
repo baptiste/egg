@@ -198,7 +198,7 @@ ggarrange <- function(..., plots = list(...),
   
   n <- length(plots)
   grobs <- lapply(plots, ggplot2::ggplotGrob)
-
+  
   
   ## logic for the layout
   # if nrow/ncol supplied, honour this
@@ -242,6 +242,11 @@ ggarrange <- function(..., plots = list(...),
   
   if(n %/% nrow) { # trouble, we need to add dummy grobs to fill the layout
     grobs <- c(grobs, rep(list(.dummy_gtable), nrow*ncol - n))
+    
+    # add dummy labels if needed
+    if((!is.null(labels)) && (length(labels) != nrow*ncol)){
+      labels <- c(labels, rep("", nrow*ncol - length(labels)))
+    }
   }
   
   ## case numeric

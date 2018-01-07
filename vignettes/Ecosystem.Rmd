@@ -308,8 +308,9 @@ tabl <- "
 | [(r cookbook)][2] | `multiplot`     |   no   | no         |
 | [gtable][3]       | `rbind`, `cbind`|   yes  | yes        |
 | [cowplot][4]      | `plot_grid`     |   yes* | yes*       |
-| [egg][5]          | `ggarrange`     |   yes  | yes        |
-| wheel2            | `ground_breaking_rotating_object` | ? | ? |
+| [multipanelfigure][5]    | `multi_panel_figure`     |   yes  | yes        |
+| [egg][6]          | `ggarrange`     |   yes  | yes        |
+| [patchwork][7]    | `plot_layout`     |   yes  | yes        |
 "
 cat(tabl) 
 ```
@@ -318,7 +319,9 @@ cat(tabl)
 [2]: http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)
 [3]: https://CRAN.R-project.org/package=gtable
 [4]: https://CRAN.R-project.org/package=cowplot
-[5]: https://CRAN.R-project.org/package=egg
+[5]: https://CRAN.R-project.org/package=multipanelfigure
+[6]: https://CRAN.R-project.org/package=egg
+[7]: https://github.com/thomasp85/patchwork
 
 
 ### grid viewports and layouts
@@ -332,3 +335,7 @@ print(p1, vp = vplayout(1, 1:2))
 print(p2, vp = vplayout(2, 1))
 print(p3, vp = vplayout(2, 2))
 ```
+
+## Acknowledgements 
+
+Parts of this document were [originally written by Hadley Wickham as a draft vignette](https://github.com/tidyverse/ggplot2/issues/1239) for the 'ggplot2' package; it has since been shuffled around quite a bit and I have lost track of the exact history of edits.

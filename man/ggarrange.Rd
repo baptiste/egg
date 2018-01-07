@@ -43,9 +43,9 @@ ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
 
 \item{debug}{logical, show layout with thin lines}
 
-\item{labels}{labels}
+\item{labels}{character labels used for annotation of subfigures}
 
-\item{label.args}{label parameters}
+\item{label.args}{label list of parameters for the formatting of labels}
 }
 \value{
 gtable of aligned plots
@@ -54,13 +54,11 @@ gtable of aligned plots
 ggarrange
 }
 \examples{
-library(grid)
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
   geom_point() 
 p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
   geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
   guides(colour="none") +
   theme()
-grid.newpage()
-grid.draw(ggarrange(p1, p2, widths = c(2,1)))
+ggarrange(p1, p2, widths = c(2,1), labels = c("a", "b"))
 }

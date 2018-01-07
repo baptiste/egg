@@ -166,23 +166,21 @@ label_grid <- function(labels,
 #' @param newpage logical: draw on a new page
 #' @param draw logical: draw or return a grob
 #' @param debug logical, show layout with thin lines
-#' @param labels labels
-#' @param label.args label parameters
+#' @param labels character labels used for annotation of subfigures
+#' @param label.args label list of parameters for the formatting of labels
 #' @importFrom grid is.unit is.grob
 #' @importFrom grDevices n2mfrow
 #' @importFrom gridExtra gtable_cbind gtable_rbind
 #' @return gtable of aligned plots
 #' @export
 #' @examples 
-#' library(grid)
 #' p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
 #'   geom_point() 
 #' p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
 #'   geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
 #'   guides(colour="none") +
 #'   theme()
-#' grid.newpage()
-#' grid.draw(ggarrange(p1, p2, widths = c(2,1)))
+#' ggarrange(p1, p2, widths = c(2,1), labels = c("a", "b"))
 ggarrange <- function(..., plots = list(...), 
                       nrow = NULL, ncol = NULL, 
                       widths = NULL, heights = NULL,

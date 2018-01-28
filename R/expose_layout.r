@@ -17,34 +17,35 @@
 #' grid.arrange(grobs=pl, widths=c(1.2,1,1),
 #'              layout_matrix = rbind(c(1, 2, 3),
 #'                                    c(4, 4, 4)))
-expose_layout <- function(p, draw = TRUE, newpage = TRUE){
+expose_layout <- function(p, draw = TRUE, newpage = TRUE) {
   g <- ggplotGrob(p)
   lay <- g[["layout"]]
   gt <- g
-  
+
   ids <- c("background", "panel", "axis", "lab", "guide", "strip", "title")
-  
-  replace_grob <- function(idname, col){
+
+  replace_grob <- function(idname, col) {
     id <- grepl(idname, lay$name)
-    pos <- lay[id,]
-    newgrob <-  rectGrob(gp=gpar(col="white", lwd=1.2, fill=col))
+    pos <- lay[id, ]
+    newgrob <- rectGrob(gp = gpar(col = "white", lwd = 1.2, fill = col))
     gt$grobs[id] <- replicate(nrow(pos), newgrob, simplify = FALSE)
   }
-  
-  cols <- c("grey95", "#FBB4AE", "#B3CDE3", "#CCEBC5", "#DECBE4", "#FED9A6", 
-            "#FFFFCC", "#E5D8BD", "#FDDAEC")
-  
-  for(ii in seq_along(ids)){
-    
+
+  cols <- c(
+    "grey95", "#FBB4AE", "#B3CDE3", "#CCEBC5", "#DECBE4", "#FED9A6",
+    "#FFFFCC", "#E5D8BD", "#FDDAEC"
+  )
+
+  for (ii in seq_along(ids)) {
     id <- grepl(ids[ii], lay$name)
-    pos <- lay[id,]
-    newgrob <-  rectGrob(gp=gpar(col="white", lwd=1.2, fill=cols[ii]))
+    pos <- lay[id, ]
+    newgrob <- rectGrob(gp = gpar(col = "white", lwd = 1.2, fill = cols[ii]))
     gt$grobs[id] <- replicate(nrow(pos), newgrob, simplify = FALSE)
   }
-  
-  
-  if(draw) {
-    if(newpage) grid.newpage()
+
+
+  if (draw) {
+    if (newpage) grid.newpage()
     grid.draw(gt)
   }
   gt

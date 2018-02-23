@@ -26,7 +26,7 @@ gtable_frame
 library(grid)
 library(gridExtra)
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
-  geom_point() 
+  geom_point()
 
 p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
   geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +

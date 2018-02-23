@@ -31,8 +31,8 @@ ggplot(d, aes(f,x)) +
   facet_wrap(~f)+
   theme_bw() +
   geom_point()+
-  geom_custom(data = dummy, aes(data = data, y = 2), 
+  geom_custom(data = dummy, aes(data = data, y = 2),
               grob_fun = function(x) rasterGrob(x, interpolate = FALSE,
-                                                width=unit(1,"cm"), 
+                                                width=unit(1,"cm"),
                                                 height=unit(1,"cm")))
 }

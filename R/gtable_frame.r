@@ -39,11 +39,10 @@ gtable_frame <- function(g, width=unit(1, "null"), height=unit(1, "null"), debug
   panels <- g[["layout"]][grepl("panel", g[["layout"]][["name"]]), ]
   ll <- unique(panels$l)
   tt <- unique(panels$t)
-
   fixed_ar <- g$respect
   if (fixed_ar) { # there lies madness, we want to align with aspect ratio constraints
     ar <- as.numeric(g$heights[tt[1]]) / as.numeric(g$widths[ll[1]])
-    height <- width * ar
+    height <- width * (ar / length(ll))
     g$respect <- FALSE
   }
 

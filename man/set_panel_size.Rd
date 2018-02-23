@@ -28,6 +28,6 @@ set_panel_size
 }
 \examples{
 p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)
-p2 <- p1 + facet_wrap(~carb, nrow=1) 
+p2 <- p1 + facet_wrap(~carb, nrow=1)
 grid.arrange(grobs=lapply(list(p1,p2), set_panel_size))
 }

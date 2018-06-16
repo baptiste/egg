@@ -20,7 +20,7 @@ gtable_frame(g, width = unit(1, "null"), height = unit(1, "null"),
 3x3 gtable wrapping the plot
 }
 \description{
-gtable_frame
+Reformat the gtable associated with a ggplot object into a 3x3 gtable where the central cell corresponds to the plot panel(s).
 }
 \examples{
 library(grid)

@@ -1,6 +1,7 @@
 
 #' set_panel_size
 #'
+#' @description Set the panel width/height of a ggplot to a fixed value.
 #' @param p ggplot2
 #' @param g gtable
 #' @param file optional output filename

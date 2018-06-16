@@ -1,5 +1,6 @@
 #' expose_layout
 #'
+#' @description Schematic view of a ggplot object's layout.
 #' @param p ggplot
 #' @param draw logical, draw the gtable
 #' @param newpage logical

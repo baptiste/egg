@@ -1,6 +1,7 @@
 
 #' geom_custom
 #'
+#' @description Draw user-defined grobs, typically annotations, at specific locations.
 #' @param mapping mapping
 #' @param data data
 #' @param inherit.aes inherit.aes
@@ -70,7 +71,7 @@ GeomCustom <- ggproto(
       }
     )
     # grid::grobName(do.call(grobTree, gl), "geom_custom")    
-    ggplot2:::ggname("geom_custom",do.call(grobTree, gl))
+    do.call(grobTree, gl)
 
   },
 

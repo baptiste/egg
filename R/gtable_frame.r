@@ -1,6 +1,7 @@
 
 #' gtable_frame
 #'
+#' @description Reformat the gtable associated with a ggplot object into a 3x3 gtable where the central cell corresponds to the plot panel(s).
 #' @param g gtable
 #' @param width requested width
 #' @param height requested height
@@ -161,6 +162,7 @@ label_grid <- function(labels,
 
 #' ggarrange
 #'
+#' @description Arrange multiple ggplot objects on a page, aligning the plot panels.
 #' @param ... ggplot objects
 #' @param plots list of ggplots
 #' @param nrow number of rows

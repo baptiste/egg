@@ -24,7 +24,7 @@ set_panel_size(p = NULL, g = ggplot2::ggplotGrob(p), file = NULL,
 gtable with fixed panel sizes
 }
 \description{
-set_panel_size
+Set the panel width/height of a ggplot to a fixed value.
 }
 \examples{
 p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)

@@ -17,7 +17,7 @@ expose_layout(p, draw = TRUE, newpage = TRUE)
 gtable
 }
 \description{
-expose_layout
+Schematic view of a ggplot object's layout.
 }
 \examples{
 p1 <- qplot(mpg, wt, data=mtcars, colour=cyl)

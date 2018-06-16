@@ -1,6 +1,7 @@
 
 #' symmetrise_scale
 #'
+#' @description Adds a blank layer to a ggplot to extend one axis symmetrically about 0 for all facets.
 #' @param p ggplot2
 #' @param axis axis
 #'

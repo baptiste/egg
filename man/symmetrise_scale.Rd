@@ -15,7 +15,7 @@ symmetrise_scale(p, axis = "x")
 plot with scales adjusted
 }
 \description{
-symmetrise_scale
+Adds a blank layer to a ggplot to extend one axis symmetrically about 0 for all facets.
 }
 \examples{
 library(ggplot2)

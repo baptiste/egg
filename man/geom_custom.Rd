@@ -19,7 +19,7 @@ geom_custom(mapping = NULL, data = NULL, inherit.aes = TRUE, ...)
 layer
 }
 \description{
-geom_custom
+Draw user-defined grobs, typically annotations, at specific locations.
 }
 \examples{
 library(grid)

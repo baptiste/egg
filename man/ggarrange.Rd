@@ -51,7 +51,7 @@ ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
 gtable of aligned plots
 }
 \description{
-ggarrange
+Arrange multiple ggplot objects on a page, aligning the plot panels.
 }
 \examples{
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +

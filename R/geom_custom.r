@@ -7,7 +7,7 @@
 #' @param ... arguments passed to the geom's draw_group method
 #'
 #' @importFrom gtable gtable_matrix gtable_add_grob gtable_add_cols gtable_add_rows
-#' @importFrom grid nullGrob unit grobTree editGrob
+#' @importFrom grid nullGrob unit grobTree editGrob grobName
 #' @importFrom ggplot2 ggproto ggproto_parent layer
 #' @return layer
 #' @export
@@ -45,6 +45,11 @@ geom_custom <- function(mapping = NULL,
 GeomCustom <- ggproto(
   "GeomCustom",
   Geom,
+  
+  handle_na = function(self, data, params) {
+    data # do nothing
+  },
+  
   setup_data = function(self, data, params) {
     data <- ggproto_parent(Geom, self)$setup_data(data, params)
     data
@@ -64,7 +69,9 @@ GeomCustom <- ggproto(
         )
       }
     )
-    ggplot2:::ggname("geom_custom", do.call(grobTree, gl))
+    # grid::grobName(do.call(grobTree, gl), "geom_custom")    
+    ggplot2:::ggname("geom_custom",do.call(grobTree, gl))
+
   },
 
   required_aes = c("data", "x", "y")

@@ -37,12 +37,16 @@
 #' grid.draw(combined)
 gtable_frame <- function(g, width=unit(1, "null"), height=unit(1, "null"), debug=FALSE) {
   panels <- g[["layout"]][grepl("panel", g[["layout"]][["name"]]), ]
+  pargins <- g[["layout"]][grepl("panel", g[["layout"]][["name"]]), ]
   ll <- unique(panels$l)
+  margins <- if(length(ll) == 1) unit(0,"pt") else g$widths[ll[-length(ll)]+2]
   tt <- unique(panels$t)
   fixed_ar <- g$respect
   if (fixed_ar) { # there lies madness, we want to align with aspect ratio constraints
     ar <- as.numeric(g$heights[tt[1]]) / as.numeric(g$widths[ll[1]])
-    height <- width * (ar / length(ll))
+    # a*(b-c) != ab - ac in grid...
+    height <- width * (ar / length(ll)) - sum(margins)* (ar / length(ll))
+    print(height)
     g$respect <- FALSE
   }
 

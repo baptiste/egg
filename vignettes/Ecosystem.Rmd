@@ -1,13 +1,15 @@
 ---
 title: "Laying out multiple plots on a page"
-author: "Baptiste Auguie"
+author: "Baptiste Auguié"
 date: '`r Sys.Date()`'
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Laying out multiple plots on a page}
+  %\VignetteEncoding{UTF-8}
 output:
-  knitr:::html_vignette:
-    toc: yes
+  rmarkdown::html_vignette:
+  toc: true
+  toc_depth: 3
 ---
 
 ```{r setup, echo=FALSE, results='hide', message=FALSE}

@@ -1,56 +1,58 @@
 ---
 title: "Overview of the egg package"
-author: "Baptiste Auguie"
+author: "Baptiste Auguié"
 date: '`r Sys.Date()`'
 vignette: >
-%\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Overview of the egg package}
-  output:
-  knitr:::html_vignette:
-  toc: yes
-  ---
+  %\VignetteEncoding{UTF-8}
+output:
+  rmarkdown::html_vignette:
+  toc: true
+  toc_depth: 3
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(egg)
+library(grid)
+library(gridExtra)
+library(gtable)
+library(knitr)
+opts_chunk$set(message = FALSE,
+fig.width = 7,
+fig.height = 3)
+```
+
+This document provides a brief overview of the main utiilty functions included in the `egg` package.
+
+## Exposing ggplot2 layouts
+
+The function `expose_layout` can be useful to illustrate the structure of ggplot2 plots, e.g. when ying to customise and/or post-process the gtable layout.
+
+```{r layout}
+p1 <- qplot(mpg, wt, data = mtcars, colour = cyl)
+p2 <- qplot(mpg, data = mtcars) + ggtitle("title")
+p3 <- qplot(mpg, data = mtcars, geom = "dotplot")
+p4 <-
+p1 + facet_wrap( ~ carb, nrow = 1) + theme(legend.position = "none") +
+ggtitle("facetted plot")
+pl <- lapply(list(p1, p2, p3, p4), expose_layout, FALSE, FALSE)
+grid.arrange(
+grobs = pl,
+widths = c(1.2, 1, 1),
+layout_matrix = rbind(c(1, 2, 3),
+c(4, 4, 4))
+)
+```
   
-  ```{r setup, echo=FALSE, results='hide', message=FALSE}
-  library(egg)
-  library(grid)
-  library(gridExtra)
-  library(gtable)
-  library(knitr)
-  opts_chunk$set(message = FALSE,
-  fig.width = 7,
-  fig.height = 3)
-  ```
   
-  This document provides a brief overview of the main utiilty functions included in the `egg` package.
+## Setting panel size
   
-  ## Exposing ggplot2 layouts
+In some cases, having ggplot2 expand the plot panel to best fit the available space isn't ideal: for instance, we may want to produce multiple plots to appear on different slides of a presentation, and the successive pages should have the exact same layout for smooth visual transition. Another use-case is to embed multiple separate graphics in a drawing/page layout software. In this situation the plot alignement will be made manually, but the plots should not be rescaled (otherwise the fonts would be distorted). For such situations, the easiest solution is to set fixed dimensions to the gtable produced by ggplot2. 
   
-  The function `expose_layout` can be useful to illustrate the structure of ggplot2 plots, e.g. when trying to customise and/or post-process the gtable layout.
+The function `set_panel_size` helps set the panel size (width, height) to absolute measurements in the form of grid units. In the case of a facetted plot, all panels are set to the same value.
   
-  ```{r layout}
-  p1 <- qplot(mpg, wt, data = mtcars, colour = cyl)
-  p2 <- qplot(mpg, data = mtcars) + ggtitle("title")
-  p3 <- qplot(mpg, data = mtcars, geom = "dotplot")
-  p4 <-
-  p1 + facet_wrap( ~ carb, nrow = 1) + theme(legend.position = "none") +
-  ggtitle("facetted plot")
-  pl <- lapply(list(p1, p2, p3, p4), expose_layout, FALSE, FALSE)
-  grid.arrange(
-  grobs = pl,
-  widths = c(1.2, 1, 1),
-  layout_matrix = rbind(c(1, 2, 3),
-  c(4, 4, 4))
-  )
-  ```
-  
-  
-  ## Setting panel size
-  
-  In some cases, having ggplot2 expand the plot panel to best fit the available space isn't ideal: for instance, we may want to produce multiple plots to appear on different slides of a presentation, and the successive pages should have the exact same layout for smooth visual transition. Another use-case is to embed multiple separate graphics in a drawing/page layout software. In this situation the plot alignement will be made manually, but the plots should not be rescaled (otherwise the fonts would be distorted). For such situations, the easiest solution is to set fixed dimensions to the gtable produced by ggplot2. 
-  
-  The function `set_panel_size` helps set the panel size (width, height) to absolute measurements in the form of grid units. In the case of a facetted plot, all panels are set to the same value.
-  
-  ```{r panel, fig.height=3.5}
+```{r panel, fig.height=3.5}
   p1 <- qplot(mpg, wt, data = mtcars, colour = cyl)
 p2 <- p1 + facet_wrap( ~ carb, nrow = 1)
 grid.arrange(grobs = lapply(

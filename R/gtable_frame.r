@@ -47,7 +47,6 @@ gtable_frame <- function(g, width=unit(1, "null"), height=unit(1, "null"), debug
     ar <- as.numeric(g$heights[tt[1]]) / as.numeric(g$widths[ll[1]])
     # a*(b-c) != ab - ac in grid...
     height <- width * (ar / length(ll)) - sum(margins)* (ar / length(ll))
-    print(height)
     g$respect <- FALSE
   }
 

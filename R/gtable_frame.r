@@ -46,7 +46,7 @@ gtable_frame <- function(g, width=unit(1, "null"), height=unit(1, "null"), debug
   if (fixed_ar) { # there lies madness, we want to align with aspect ratio constraints
     ar <- as.numeric(g$heights[tt[1]]) / as.numeric(g$widths[ll[1]])
     # a*(b-c) != ab - ac in grid...
-    height <- width * (ar / length(ll)) - sum(margins)* (ar / length(ll))
+    height <- width * (ar / length(ll)) # - sum(margins)* (ar / length(ll))
     g$respect <- FALSE
   }
 

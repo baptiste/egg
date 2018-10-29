@@ -40,7 +40,6 @@ tag_facet <- function(p, open="(", close = ")",
   
   gb <- ggplot_build(p)
   lay <- gb$layout$layout
-  nm <- names(gb$layout$facet$params$rows)
   tags <- cbind(lay, label = paste0(open,tag_pool[lay$PANEL],close), x=x, y=y)
   p + geom_text(data=tags, aes(x=x,y=y, label=label), ...,
                 hjust=hjust, vjust=vjust, fontface=fontface, inherit.aes = FALSE) +

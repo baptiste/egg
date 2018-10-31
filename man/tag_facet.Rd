@@ -14,19 +14,19 @@ tag_facet(p, open = "(", close = ")", tag_pool = letters, x = -Inf,
 
 \item{close}{closing character, default: )}
 
+\item{tag_pool}{character vector to pick tags from}
+
 \item{x}{x position within panel, default: -Inf}
 
 \item{y}{y position within panel, default: Inf}
 
-\item{hjust}{tag_pool character vector to pick tags from}
+\item{hjust}{hjust}
 
 \item{vjust}{vjust}
 
 \item{fontface}{fontface}
 
 \item{...}{further arguments passed to geom_text layer}
-
-\item{hjust}{hjust}
 }
 \value{
 plot with facet strips removed and replaced by in-panel tags

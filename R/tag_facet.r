@@ -7,7 +7,7 @@
 #' @param p ggplot
 #' @param open opening character, default: (
 #' @param close  closing character, default: )
-#' @param hjust tag_pool character vector to pick tags from
+#' @param tag_pool character vector to pick tags from
 #' @param x x position within panel, default: -Inf
 #' @param y y position within panel, default: Inf
 #' @param hjust hjust
@@ -16,7 +16,7 @@
 #' @param ... further arguments passed to geom_text layer
 #'
 #' @return plot with facet strips removed and replaced by in-panel tags 
-#' @importFrom ggplot2 geom_text ggplot_build theme element_blank
+#' @importFrom ggplot2 geom_text ggplot_build theme element_blank aes
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -41,7 +41,7 @@ tag_facet <- function(p, open="(", close = ")",
   gb <- ggplot_build(p)
   lay <- gb$layout$layout
   tags <- cbind(lay, label = paste0(open,tag_pool[lay$PANEL],close), x=x, y=y)
-  p + geom_text(data=tags, aes(x=x,y=y, label=label), ...,
+  p + geom_text(data=tags, aes_string(x="x", y="y", label="label"), ...,
                 hjust=hjust, vjust=vjust, fontface=fontface, inherit.aes = FALSE) +
     theme(strip.text = element_blank(), strip.background = element_blank())
 }

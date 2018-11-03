@@ -1,7 +1,7 @@
 Package: egg
 Type: Package
 Title: Extensions for 'ggplot2': Custom Geom, Plot Alignment, Symmetrised Scale, and Fixed Panel Size
-Version: 0.4.1
+Version: 0.4.2
 Authors@R: c(person("Baptiste", "Auguie",
     email = "baptiste.auguie@gmail.com",
     role = c("aut", "cre")))
@@ -20,4 +20,4 @@ Imports:
 Suggests:
     knitr,
     png
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

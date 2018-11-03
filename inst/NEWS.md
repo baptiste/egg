@@ -1,3 +1,9 @@
+# gridExtra 0.4.2 (2018-11-02)
+ 
+## NEW FEATURES
+
+* added theme_article
+
 # gridExtra 0.4.1 (2018-07-23)
  
 ## NEW FEATURES
@@ -7,7 +13,6 @@
 ## BUG FIX
 
 * fixed aspect ratio for facetted plots was causing a problem in ggarrange; it now works again but the aspect ratio is not fully respected, as space between panels is ignored in the calculation
-
 
 # gridExtra 0.4.0 (2018-06-18)
  

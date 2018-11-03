@@ -6,9 +6,10 @@
 \usage{
 ggarrange(..., plots = list(...), nrow = NULL, ncol = NULL,
   widths = NULL, heights = NULL, byrow = TRUE, top = NULL,
-  bottom = NULL, left = NULL, right = NULL, padding = unit(0.5, "line"),
-  clip = "on", draw = TRUE, newpage = TRUE, debug = FALSE,
-  labels = NULL, label.args = list(gp = grid::gpar(font = 4, cex = 1.2)))
+  bottom = NULL, left = NULL, right = NULL, padding = unit(0.5,
+  "line"), clip = "on", draw = TRUE, newpage = TRUE, debug = FALSE,
+  labels = NULL, label.args = list(gp = grid::gpar(font = 4, cex =
+  1.2)))
 }
 \arguments{
 \item{...}{ggplot objects}
@@ -57,8 +58,8 @@ Arrange multiple ggplot objects on a page, aligning the plot panels.
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
   geom_point()
 p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
-  geom_point() + facet_wrap( ~ cyl, ncol=2, scales = "free") +
-  guides(colour="none") +
+  geom_point() + facet_wrap( ~ cyl, ncol=2, scales = 'free') +
+  guides(colour='none') +
   theme()
-ggarrange(p1, p2, widths = c(2,1), labels = c("a", "b"))
+ggarrange(p1, p2, widths = c(2,1), labels = c('a', 'b'))
 }

@@ -13,6 +13,7 @@
 #' @param hjust hjust
 #' @param vjust vjust
 #' @param fontface fontface
+#' @param family font family
 #' @param ... further arguments passed to geom_text layer
 #'
 #' @return plot with facet strips removed and replaced by in-panel tags 
@@ -32,16 +33,13 @@
 #'     ~ red + blue)
 #' tag_facet(p)
 
-tag_facet <- function(p, open="(", close = ")",
-                      tag_pool = letters,
-                      x = -Inf, y = Inf,
-                      hjust = -0.5, vjust = 1.5, 
-                      fontface = 2, ...){
-  
-  gb <- ggplot_build(p)
-  lay <- gb$layout$layout
-  tags <- cbind(lay, label = paste0(open,tag_pool[lay$PANEL],close), x=x, y=y)
-  p + geom_text(data=tags, aes_string(x="x", y="y", label="label"), ...,
-                hjust=hjust, vjust=vjust, fontface=fontface, inherit.aes = FALSE) +
-    theme(strip.text = element_blank(), strip.background = element_blank())
+tag_facet <- function(p, open = "(", close = ")", tag_pool = letters, x = -Inf, y = Inf, 
+    hjust = -0.5, vjust = 1.5, fontface = 2, family = "", ...) {
+    
+    gb <- ggplot_build(p)
+    lay <- gb$layout$layout
+    tags <- cbind(lay, label = paste0(open, tag_pool[lay$PANEL], close), x = x, y = y)
+    p + geom_text(data = tags, aes_string(x = "x", y = "y", label = "label"), ..., hjust = hjust, 
+        vjust = vjust, fontface = fontface, family = family, inherit.aes = FALSE) + theme(strip.text = element_blank(), 
+        strip.background = element_blank())
 }

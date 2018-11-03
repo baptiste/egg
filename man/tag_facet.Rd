@@ -5,7 +5,8 @@
 \title{tag_facet}
 \usage{
 tag_facet(p, open = "(", close = ")", tag_pool = letters, x = -Inf,
-  y = Inf, hjust = -0.5, vjust = 1.5, fontface = 2, ...)
+  y = Inf, hjust = -0.5, vjust = 1.5, fontface = 2, family = "",
+  ...)
 }
 \arguments{
 \item{p}{ggplot}
@@ -25,6 +26,8 @@ tag_facet(p, open = "(", close = ")", tag_pool = letters, x = -Inf,
 \item{vjust}{vjust}
 
 \item{fontface}{fontface}
+
+\item{family}{font family}
 
 \item{...}{further arguments passed to geom_text layer}
 }

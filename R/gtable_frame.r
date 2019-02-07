@@ -176,10 +176,11 @@ label_grid <- function(labels, x = 0, hjust = 0, y = 1, vjust = 1, ..., .fun = g
 #'   guides(colour='none') +
 #'   theme()
 #' ggarrange(p1, p2, widths = c(2,1), labels = c('a', 'b'))
+
 ggarrange <- function(..., plots = list(...), nrow = NULL, ncol = NULL, widths = NULL, 
-    heights = NULL, byrow = TRUE, top = NULL, bottom = NULL, left = NULL, right = NULL, 
-    padding = unit(0.5, "line"), clip = "on", draw = TRUE, newpage = TRUE, debug = FALSE, 
-    labels = NULL, label.args = list(gp = grid::gpar(font = 4, cex = 1.2))) {
+                      heights = NULL, byrow = TRUE, top = NULL, bottom = NULL, left = NULL, right = NULL, 
+                      padding = unit(0.5, "line"), clip = "on", draw = TRUE, newpage = TRUE, debug = FALSE, 
+                      labels = NULL, label.args = list(gp = grid::gpar(font = 4, cex = 1.2))) {
     n <- length(plots)
     grobs <- lapply(plots, ggplot2::ggplotGrob)
     
@@ -269,15 +270,15 @@ ggarrange <- function(..., plots = list(...), nrow = NULL, ncol = NULL, widths =
         splits <- cut(seqgrobs, nrc, labels = seq_len(nrc))
         ## widths and heights refer to the layout repeat for corresponding grobs
         
-        seqw <- splits[c(matrix(seqgrobs, nrow = nrow, byrow = byrow))]
-        seqh <- splits[c(matrix(seqgrobs, nrow = nrow, byrow = !byrow))]
+        repw <- rep_len(seq_along(widths), length.out=n)
+        reph <- rep_len(seq_along(heights), length.out=n)
+        widths <- c(matrix(widths[repw], ncol = nrc, byrow = !byrow))
+        heights <- c(matrix(heights[reph], ncol = nrc, byrow = byrow))
         
-        widths <- widths[seqw]
-        heights <- heights[seqh]
     }
     
     fg <- mapply(gtable_frame, g = grobs, width = widths, height = heights, MoreArgs = list(debug = debug), 
-        SIMPLIFY = FALSE)
+                 SIMPLIFY = FALSE)
     
     
     if (!is.null(labels)) {
@@ -287,7 +288,7 @@ ggarrange <- function(..., plots = list(...), nrow = NULL, ncol = NULL, widths =
         # add each grob to the whole gtable
         fg <- mapply(function(g, l) {
             gtable::gtable_add_grob(g, l, t = 1, l = 1, b = nrow(g), r = ncol(g), z = Inf, 
-                clip = "off", name = "label")
+                                    clip = "off", name = "label")
         }, g = fg, l = labels, SIMPLIFY = FALSE)
     }
     
@@ -334,7 +335,7 @@ ggarrange <- function(..., plots = list(...), nrow = NULL, ncol = NULL, widths =
         w <- grobWidth(right) + padding
         gt <- gtable_add_cols(gt, widths = w, -1)
         gt <- gtable_add_grob(gt, right, t = 1, b = nrow(gt), l = ncol(gt), r = ncol(gt), 
-            z = Inf, clip = clip)
+                              z = Inf, clip = clip)
     }
     
     if (draw) {

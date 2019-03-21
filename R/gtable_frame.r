@@ -176,7 +176,6 @@ label_grid <- function(labels, x = 0, hjust = 0, y = 1, vjust = 1, ..., .fun = g
 #'   guides(colour='none') +
 #'   theme()
 #' ggarrange(p1, p2, widths = c(2,1), labels = c('a', 'b'))
-
 ggarrange <- function(..., plots = list(...), nrow = NULL, ncol = NULL, widths = NULL, 
                       heights = NULL, byrow = TRUE, top = NULL, bottom = NULL, left = NULL, right = NULL, 
                       padding = unit(0.5, "line"), clip = "on", draw = TRUE, newpage = TRUE, debug = FALSE, 
@@ -221,9 +220,12 @@ ggarrange <- function(..., plots = list(...), nrow = NULL, ncol = NULL, widths =
         ncol <- nm[2]
     }
     
-    if (n%/%nrow) {
+    is_full <- ((nrow*ncol) %% n) > 0
+    if (is_full) {
+        message('adding dummy grobs')
         # trouble, we need to add dummy grobs to fill the layout
         grobs <- c(grobs, rep(list(.dummy_gtable), nrow * ncol - n))
+        n <- length(grobs)
         
         # add dummy labels if needed
         if ((!is.null(labels)) && (length(labels) != nrow * ncol)) {
@@ -276,6 +278,7 @@ ggarrange <- function(..., plots = list(...), nrow = NULL, ncol = NULL, widths =
         heights <- c(matrix(heights[reph], ncol = nrc, byrow = byrow))
         
     }
+    
     
     fg <- mapply(gtable_frame, g = grobs, width = widths, height = heights, MoreArgs = list(debug = debug), 
                  SIMPLIFY = FALSE)
@@ -346,6 +349,7 @@ ggarrange <- function(..., plots = list(...), nrow = NULL, ncol = NULL, widths =
     class(gt) <- c("egg", class(gt))
     invisible(gt)  # return the full gtable
 }
+
 
 
 ##' @noRd

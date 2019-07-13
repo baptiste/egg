@@ -26,9 +26,9 @@ opts_chunk$set(
 )
 ```
 
-An individual ggplot object contains multiple pieces -- axes, plot panel(s), titles, legends --, and their layout is defined and enforced via the `gtable` package, itself built around the lower-level `grid` package. The following schematic illustrates the relation between these packages.
+An individual ggplot object contains multiple pieces -- axes, plot panel(s), titles, legends --, and their layout is defined and enforced via the `gtable` package, itself built around the lower-level `grid` package. Plots themselves become _graphical objects_, which can be arranged on a page using e.g. the `gridExtra` or `egg` packages, which provide helper functions for such multi-object layouts. The following schematic illustrates the main relations between these packages.^[_If this all seems a little bit circular at times, I should probably avoid mentioning that other packages use a dummy ggplot as a blank canvas for placing grobs, the resulting object thus inheriting the ggplot class._]
 
-![Schematic illustration of the links between packages `ggplot2`, `gtable`, `grid`, and `gridExtra`.](ecosystem.png)
+![Schematic illustration of the links between packages `ggplot2`, `gtable`, `grid`, `egg` and `gridExtra`.](ecosystem.png)
 
 ## Arranging multiple plots on a page
 
@@ -89,7 +89,7 @@ Further examples are available in a dedicated `gridExtra` [vignette](https://CRA
 
 ### Plot insets
 
-A special case of layouts is where one of the plots is to be placed within another, typically as an inset of the plot panel. In this case, `grid.arrange()` cannot help, as it only provides rectangular layouts with non-overlapping cells. Instead, a simple solution is to convert the plot into a *grob*, and place it using `annotation_custom()` within the plot panel.
+A special case of layouts is where one of the plots is to be placed within another, typically as an inset of the plot panel. In this case, `grid.arrange()` cannot help, as it only provides rectangular layouts with non-overlapping cells. Instead, a simple solution is to convert the plot into a *grob*, and place it using `annotation_custom()` within the plot panel. Note the related `geom_custom()` function, suitable when different facets should display different annotations.
 
 ```{r inset, fig.width=4, fig.height=3, fig.cap="Plot inset."}
 g <- ggplotGrob(qplot(1, 1) +
@@ -192,13 +192,13 @@ Aligning plots is achieved simply as follows,
 
 ```{r egg, fig.height=3, fig.width=6}
 p1 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
-  geom_point()
+  geom_point()+ theme_article() + theme(legend.position = 'top') 
 p2 <- ggplot(mtcars, aes(mpg, wt, colour = factor(cyl))) +
   geom_point() + facet_wrap(~ cyl, ncol = 2, scales = "free") +
   guides(colour = "none") +
-  theme()
+  theme_article()
   
-  ggarrange(p1, p2, widths = 1:2)
+ggarrange(p1, p2, widths = c(1.5,2))
 ```
 
 where many parameters are common to the `grid.arrange()` function from `gridExtra`.
@@ -328,7 +328,7 @@ cat(tabl)
 
 ### grid viewports and layouts
 
-Underlying all these other packages is the `grid` package, included in the core R distribution. This package provides the low-level functions used for drawing and placing objects on a device. The key concept for object placeement is that of a *viewport*: in grid terminology, this represents a rectangular subregion of the display. The default viewport takes up the entire page (device window), and by customising the viewport's location, size, and even orientation you can arrange a set of plots in just about any way you can imagine.
+Underlying all these other packages is the `grid` package, included in the core R distribution. This package provides the low-level functions used for drawing and placing objects on a device. 
 
 ```{r comp}
 pushViewport(viewport(layout = grid.layout(2, 2)))
@@ -340,4 +340,5 @@ print(p3, vp = vplayout(2, 2))
 
 ## Acknowledgements 
 
-Parts of this document were [originally written by Hadley Wickham as a draft vignette](https://github.com/tidyverse/ggplot2/issues/1239) for the 'ggplot2' package; it has since been shuffled around quite a bit and I have lost track of the exact history of edits.
+Parts of this document were [originally written by Hadley Wickham as a draft vignette](https://github.com/tidyverse/ggplot2/issues/1239) for the `ggplot2` package; the contents have since been shuffled around quite a bit and I have lost track of the exact history of edits.
+

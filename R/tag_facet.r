@@ -17,7 +17,7 @@
 #' @param ... further arguments passed to geom_text layer
 #'
 #' @return plot with facet strips removed and replaced by in-panel tags 
-#' @importFrom ggplot2 geom_text ggplot_build theme element_blank aes
+#' @importFrom ggplot2 geom_text ggplot_build theme element_blank aes_string
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -63,9 +63,9 @@ tag_facet <- function(p, open = "(", close = ")", tag_pool = letters, x = -Inf, 
 #' @param family font family
 #' @param draw logical: draw the resulting gtable
 #' @param ... further arguments passed to geom_text layer
-#'
 #' @return plot with facet strips removed and replaced by in-panel tags 
-#' @importFrom ggplot2 geom_text ggplot_build theme element_blank aes
+#' @importFrom ggplot2 ggplot_gtable geom_text ggplot_build theme element_blank 
+#' @importFrom utils as.roman
 #' @export
 #' @examples
 #' library(ggplot2)

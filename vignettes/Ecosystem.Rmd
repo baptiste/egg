@@ -26,7 +26,7 @@ opts_chunk$set(
 )
 ```
 
-An individual ggplot object contains multiple pieces -- axes, plot panel(s), titles, legends --, and their layout is defined and enforced via the `gtable` package, itself built around the lower-level `grid` package. Plots themselves become _graphical objects_, which can be arranged on a page using e.g. the `gridExtra` or `egg` packages, which provide helper functions for such multi-object layouts. The following schematic illustrates the main relations between these packages.^[_If this all seems a little bit circular at times, I should probably avoid mentioning that other packages use a dummy ggplot as a blank canvas for placing grobs, the resulting object thus inheriting the ggplot class._]
+An individual ggplot object contains multiple pieces -- axes, plot panel(s), titles, legends --, and their layout is defined and enforced via the `gtable` package, itself built around the lower-level `grid` package. Plots themselves become _graphical objects_, which can be arranged on a page using e.g. the `gridExtra` or `egg` packages, which provide helper functions for such multi-object layouts. The following schematic illustrates the main relations between these packages.
 
 ![Schematic illustration of the links between packages `ggplot2`, `gtable`, `grid`, `egg` and `gridExtra`.](ecosystem.png)
 

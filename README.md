@@ -1,4 +1,7 @@
 
+[![R build
+status](https://github.com/baptiste/egg/workflows/R-CMD-check/badge.svg)](https://github.com/baptiste/egg/actions)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # egg package
